@@ -275,8 +275,16 @@ def build_html(meal_data, sheet_url, extra_data=None):
       alt="앱 QR코드"
       style="width:160px;height:160px;display:block;border-radius:6px"
     >
-    <div style="margin-top:10px;font-size:12px;font-weight:700;color:var(--ink)">📱 앱 바로가기</div>
-    <div style="font-size:11px;color:var(--muted);margin-top:2px">카메라로 찍으면 바로 접속!</div>
+    <div style="margin-top:10px;font-size:13px;font-weight:800;color:var(--ink);
+                display:flex;align-items:center;justify-content:center;gap:5px">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)"
+           stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="5" y="2" width="14" height="20" rx="2"/>
+        <path d="M12 18h.01"/>
+      </svg>
+      식단팀 앱 바로가기
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-top:3px">카메라로 찍으면 바로 접속돼요</div>
   </div>
 </div>""" if sheet_url else ""
 
