@@ -456,6 +456,14 @@ a{{text-decoration:none;color:inherit}}
       <div class="acc">카카오뱅크 3333-261-292139</div>
       <div class="nm">(예금주 이은주)</div>
       <div class="pd">기간 2026.07.29 ~ 08.01</div>
+      <div style="margin-top:16px">
+        <img
+          src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=8&data=%EC%B9%B4%EC%B9%B4%EC%98%A4%EB%B1%85%ED%81%AC+3333-261-292139+%EC%98%88%EA%B8%88%EC%A3%BC+%EC%9D%B4%EC%9D%80%EC%A3%BC"
+          alt="후원계좌 QR코드"
+          style="width:160px;height:160px;border-radius:12px;border:1px solid var(--line)"
+        >
+        <div style="font-size:11px;color:var(--muted);margin-top:6px">QR 스캔 후 계좌번호를 확인하세요</div>
+      </div>
     </div>
     <div class="foot">통영 물댄동산교회 위드공동체 · 2026 여름 아웃리치</div>
   </div>
