@@ -266,6 +266,18 @@ def build_html(meal_data, sheet_url, extra_data=None):
     식단 수정하기 (구글 시트)
   </a>
   <div style="font-size:11px;color:#7d8278;margin-top:6px">수정 후 1분 이내 자동 반영</div>
+</div>
+<div style="text-align:center;padding:20px 20px 4px">
+  <div style="display:inline-block;background:#fff;border-radius:16px;padding:16px;
+              box-shadow:0 4px 20px rgba(27,28,28,.07);border:1px solid var(--line)">
+    <img
+      src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=6&data=https://ttmeal.streamlit.app"
+      alt="앱 QR코드"
+      style="width:160px;height:160px;display:block;border-radius:6px"
+    >
+    <div style="margin-top:10px;font-size:12px;font-weight:700;color:var(--ink)">📱 앱 바로가기</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:2px">카메라로 찍으면 바로 접속!</div>
+  </div>
 </div>""" if sheet_url else ""
 
     return f"""<!doctype html><html lang="ko"><head><meta charset="utf-8">
