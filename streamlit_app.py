@@ -171,6 +171,7 @@ DAY_TAB_HTML = """
   <span class="daytab" onclick="show('thu','meal')" id="dtab-thu">목</span>
   <span class="daytab" onclick="show('fri','meal')" id="dtab-fri">금</span>
   <span class="daytab" onclick="show('sat','meal')" id="dtab-sat">토</span>
+  <span class="daytab" onclick="show('extra','extra')" id="dtab-extra">기타</span>
 </div>"""
 
 def build_day_section(day_id, day_label, subtitle, color_var, meals):
@@ -471,11 +472,11 @@ a{{text-decoration:none;color:inherit}}
   <span class="tab" data-tab="meal"   onclick="show('wed','meal')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v7M5 3v4.5a2 2 0 0 0 4 0V3M7 10v11"/><path d="M17 3c-1.7 0-3 2-3 5s1 4 2 4v9"/></svg><span>식단</span>
   </span>
-  <span class="tab" data-tab="people" onclick="show('team','people')">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="8.5" r="2.4"/><path d="M16 14.2A4.6 4.6 0 0 1 20.5 19"/></svg><span>팀 정보</span>
-  </span>
   <span class="tab" data-tab="extra"  onclick="show('extra','extra')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M9 9h6M9 12h6M9 15h4"/></svg><span>기타</span>
+  </span>
+  <span class="tab" data-tab="people" onclick="show('team','people')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="8.5" r="2.4"/><path d="M16 14.2A4.6 4.6 0 0 1 20.5 19"/></svg><span>팀 정보</span>
   </span>
 </nav>
 
