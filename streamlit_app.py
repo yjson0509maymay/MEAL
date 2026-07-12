@@ -41,29 +41,73 @@ CSV_URL = (
 
 # ─────────────────────── 데이터 로드 ───────────────────────
 @st.cache_data(ttl=60)
-def load_meal_data():
-    """구글 시트에서 공개 CSV를 읽어옵니다."""
+def load_all_data():
+    """구글 시트 하나에서 식단(식단)과 기타사항(기타)을 함께 읽어옵니다."""
     try:
         req = urllib.request.Request(CSV_URL, headers={"User-Agent": "Mozilla/5.0"})
         with urllib.request.urlopen(req, timeout=8) as resp:
             raw = resp.read().decode("utf-8")
         reader = csv.DictReader(io.StringIO(raw))
-        data = {}
+
+        meal_data  = {}
+        extra_data = {}
+
         for row in reader:
-            day = row.get("요일", "").strip()
-            meal_type = row.get("식사종류", "").strip()
-            if not day or not meal_type:
-                continue
-            if day not in data:
-                data[day] = {}
-            data[day][meal_type] = {
-                "dish": row.get("메뉴", "").strip(),
-                "memo": row.get("메모", "").strip(),
-                "time": row.get("시간", "").strip(),
-            }
-        return data if data else get_default_data()
+            kind = row.get("구분", "").strip()
+
+            if kind == "식단":
+                day       = row.get("요일/분류", "").strip()
+                meal_type = row.get("식사종류", "").strip()
+                if not day or not meal_type:
+                    continue
+                if day not in meal_data:
+                    meal_data[day] = {}
+                meal_data[day][meal_type] = {
+                    "dish": row.get("메뉴/내용", "").strip(),
+                    "memo": row.get("메모/비고", "").strip(),
+                    "time": row.get("시간", "").strip(),
+                }
+
+            elif kind == "기타":
+                category = row.get("요일/분류", "").strip()
+                content  = row.get("메뉴/내용", "").strip()
+                note     = row.get("메모/비고", "").strip()
+                if not category or not content:
+                    continue
+                if category not in extra_data:
+                    extra_data[category] = []
+                extra_data[category].append((content, note))
+
+        return (
+            meal_data  if meal_data  else get_default_data(),
+            extra_data if extra_data else get_default_extra(),
+        )
     except Exception:
-        return get_default_data()
+        return get_default_data(), get_default_extra()
+
+def get_default_extra():
+    return {
+        "아침 공통 메뉴": [
+            ("바나나 · 삶은계란 · 시리얼 · 우유 · 식빵 · 잼 · 컵라면", ""),
+            ("커피 알아보기 (철수 형)", "확인필요"),
+        ],
+        "상시 반찬": [("김치 · 단무지 · 김", "")],
+        "상시 간식": [
+            ("초콜릿 · 비타민젤리 · 말랑카우 · 마이쮸 · 자유시간", "상시구비품"),
+            ("타먹는 커피 · 디카페인 · 얼음", "상시구비품"),
+        ],
+        "밥 담당": [("오재화 — 수요일 체크", "담당")],
+        "준비물": [
+            ("온수통", "우리들교회 대여가능"),
+            ("아이스박스", "우리들교회 대여가능 / 통영에서도 준비"),
+            ("들통", "준비됨"),
+            ("버너", "준비됨"),
+            ("요리기구", "숙소에서 챙겨가면 됨"),
+            ("웍", "찾아보시는 중"),
+            ("냄비 · 도마 · 볼", "숙소에서 챙겨가면 됨"),
+            ("밥솥 — 숙소 2개 + 교회 1개 (10인용 2개 / 20인용 1개)", "숙소"),
+        ],
+    }
 
 def get_default_data():
     return {
@@ -160,7 +204,40 @@ def build_day_section(day_id, day_label, subtitle, color_var, meals):
 </section>"""
 
 # ─────────────────────── 메인 HTML 빌드 ───────────────────────
-def build_html(meal_data, sheet_url):
+def build_extra_section(extra_data):
+    """기타사항 섹션 HTML을 동적으로 생성합니다."""
+    CATEGORY_ORDER = ["아침 공통 메뉴", "상시 반찬", "상시 간식", "밥 담당", "준비물"]
+    all_categories = CATEGORY_ORDER + [c for c in extra_data if c not in CATEGORY_ORDER]
+
+    sections_html = ""
+    for category in all_categories:
+        if category not in extra_data:
+            continue
+        items = extra_data[category]
+        rows = ""
+        for content, note in items:
+            tag = f'<span class="info-tag">{esc(note)}</span>' if note else ""
+            rows += f"<li>{tag}{esc(content)}</li>"
+        sections_html += f"""
+    <div class="info-section">
+      <h3>{esc(category)}</h3>
+      <ul class="info-list">{rows}</ul>
+    </div>"""
+
+    return f"""<section id="page-extra" class="page-sec">
+  <div class="page">
+    <div class="dayhead" style="--c:#6b7c93">
+      <div class="dt" style="color:#6b7c93;font-size:30px">기타사항</div>
+      <div class="ds">준비물 · 상시 구비품 · 기타 안내</div>
+    </div>
+    {sections_html}
+    <div class="foot">통영 물댄동산교회 위드공동체 · 2026 여름 아웃리치</div>
+  </div>
+</section>"""
+
+def build_html(meal_data, sheet_url, extra_data=None):
+    if extra_data is None:
+        extra_data = get_default_extra()
     poster = b64("assets/poster.png", "image/png")
     team   = b64("assets/team.jpg",   "image/jpeg")
 
@@ -383,81 +460,8 @@ a{{text-decoration:none;color:inherit}}
   </div>
 </section>
 
-<!-- ══ 기타사항 ══ -->
-<section id="page-extra" class="page-sec">
-  <div class="page">
-    <div class="dayhead" style="--c:#6b7c93">
-      <div class="dt" style="color:#6b7c93;font-size:30px">기타사항</div>
-      <div class="ds">준비물 · 상시 구비품 · 기타 안내</div>
-    </div>
+{build_extra_section(extra_data)}
 
-    <!-- 아침 공통 메뉴 -->
-    <div class="info-section">
-      <h3>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg>
-        아침 공통 메뉴
-      </h3>
-      <ul class="info-list">
-        <li>바나나, 삶은계란, 시리얼, 우유, 식빵, 잼, 컵라면</li>
-        <li><span class="info-tag">확인필요</span>커피 알아보기 (철수 형)</li>
-      </ul>
-    </div>
-
-    <!-- 상시 반찬 -->
-    <div class="info-section">
-      <h3>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11h17a8.5 8.5 0 0 1-17 0z"/><path d="M2.5 11h19"/></svg>
-        상시 반찬
-      </h3>
-      <ul class="info-list">
-        <li>김치, 단무지, 김</li>
-      </ul>
-    </div>
-
-    <!-- 상시 간식 구비품 -->
-    <div class="info-section">
-      <h3>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 9h15l-1.3 9a2 2 0 0 1-2 1.7H7.8a2 2 0 0 1-2-1.7z"/><path d="M9 12.5h.01M12 14.5h.01M15 12h.01"/></svg>
-        상시 간식 구비품
-      </h3>
-      <ul class="info-list">
-        <li>초콜릿, 비타민젤리, 말랑카우, 마이쮸, 자유시간</li>
-        <li>타먹는 커피, 디카페인, 얼음</li>
-      </ul>
-    </div>
-
-    <!-- 밥 담당 -->
-    <div class="info-section">
-      <h3>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/></svg>
-        밥 담당
-      </h3>
-      <ul class="info-list">
-        <li><span class="info-tag">담당</span>오재화 — 수요일 체크</li>
-      </ul>
-    </div>
-
-    <!-- 준비물 -->
-    <div class="info-section">
-      <h3>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
-        준비물
-      </h3>
-      <ul class="info-list">
-        <li><span class="info-tag">대여가능</span>온수통 — 우리들교회</li>
-        <li><span class="info-tag">대여가능</span>아이스박스 — 우리들교회 / 통영에서도 준비</li>
-        <li><span class="info-tag">준비됨</span>들통</li>
-        <li><span class="info-tag">준비됨</span>버너</li>
-        <li><span class="info-tag">숙소</span>요리기구 — 숙소에서 챙겨가면 됨</li>
-        <li><span class="info-tag">확인중</span>웍 — 찾아보시는 중</li>
-        <li><span class="info-tag">숙소</span>냄비, 도마, 볼 — 숙소에서 챙겨가면 됨</li>
-        <li><span class="info-tag">숙소</span>밥솥 — 숙소 2개 + 교회 1개 (10인용 2개, 20인용 1개)</li>
-      </ul>
-    </div>
-
-    <div class="foot">통영 물댄동산교회 위드공동체 · 2026 여름 아웃리치</div>
-  </div>
-</section>
 
 <!-- ══ 하단 탭바 ══ -->
 <nav class="tabbar">
@@ -515,9 +519,9 @@ show('home');
 
 # ─────────────────────── 메인 ───────────────────────
 def main():
-    meal_data = load_meal_data()
+    meal_data, extra_data = load_all_data()
     sheet_url = f"https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}/edit"
-    html = build_html(meal_data, sheet_url)
+    html = build_html(meal_data, sheet_url, extra_data)
     components.html(html, height=900, scrolling=True)
 
 if __name__ == "__main__":
