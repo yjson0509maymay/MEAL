@@ -53,21 +53,25 @@ KST = timezone(timedelta(hours=9))
 DRINK_FORMS = {
     "2026-07-29": {
         "label": "수요일",
+        "meal_time": "저녁",
         "form_url": "https://docs.google.com/forms/d/e/1FAIpQLSdqC65oxkZBCuBKZI845yA0PiQMNoxK1QsJBUNI4ScLryTLyA/viewform",
         "sheet_id": "11wpG6oE6y36txCCGD3SEyHaUGof5rX5bgxIamJ2w2HE",
     },
     "2026-07-30": {
         "label": "목요일",
+        "meal_time": "아침",
         "form_url": "https://docs.google.com/forms/d/e/1FAIpQLSemTAu8pNeHGfKh5nGNOJkuO9b8Nxb5wAdZCRHz2gU1ZyXXMA/viewform",
         "sheet_id": "1XY2UNd08vbBkEkSmJmbOSYpvDxh92-PUB-4Z2DMpegE",
     },
     "2026-07-31": {
         "label": "금요일",
+        "meal_time": "아침",
         "form_url": "https://docs.google.com/forms/d/e/1FAIpQLSfPXwgLA-oNKbPKKIn1zO-MhmVVd2Y426iZAyq69cFvYLHnVA/viewform",
         "sheet_id": "1cpx_1ppncSNWl8tDbTPVD4tY9in14BDL0sl4ajVblGo",
     },
     "2026-08-01": {
         "label": "토요일",
+        "meal_time": "아침",
         "form_url": "https://docs.google.com/forms/d/e/1FAIpQLSc5WElJPctXq_geTIYHmmabQ9_rBtg2RdDCKbAgD5tWjIr9nQ/viewform",
         "sheet_id": "1hLnGdBE1bEDU7a_xnMH-y2GfVnXZisz4vsq1wcvuJJY",
     },
@@ -317,6 +321,7 @@ def build_html(meal_data, sheet_url, extra_data=None):
     drink_form_url = drink_today["form_url"]
     drink_response_url = f"https://docs.google.com/spreadsheets/d/{drink_today['sheet_id']}/edit"
     drink_label = drink_today["label"]
+    drink_meal_time = drink_today["meal_time"]
 
     wed_html = build_day_section("wed", "수요일", "하루를 열며 차분히 시작해요.",          "--wed", meal_data.get("수요일", {}))
     thu_html = build_day_section("thu", "목요일", "메인 사역일 — 든든하게 채워요.",        "--thu", meal_data.get("목요일", {}))
@@ -544,7 +549,7 @@ a{{text-decoration:none;color:inherit}}
                   box-shadow:0 4px 20px rgba(27,28,28,.07);border:1px solid var(--line)">
         <img
           src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=6&data={drink_form_url}"
-          alt="아침 커피 주문 폼 QR코드"
+          alt="{drink_label} {drink_meal_time} 커피 주문 폼 QR코드"
           style="width:160px;height:160px;display:block;border-radius:6px"
         >
         <div style="margin-top:10px;font-size:13px;font-weight:800;color:var(--ink);
@@ -555,7 +560,7 @@ a{{text-decoration:none;color:inherit}}
             <path d="M17 9h2a2 2 0 0 1 0 4h-2"/>
             <path d="M8 3c0 1-1 1.5-1 2.5S8 7 8 7"/><path d="M12 3c0 1-1 1.5-1 2.5S12 7 12 7"/>
           </svg>
-          {drink_label} 아침 커피 주문하기
+          {drink_label} {drink_meal_time} 커피 주문하기
         </div>
         <div style="font-size:11px;color:var(--muted);margin-top:3px">이름과 음료를 골라 제출해주세요</div>
       </div>
