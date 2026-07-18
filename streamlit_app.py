@@ -266,7 +266,8 @@ def build_extra_section(extra_data):
       <ul class="info-list">{rows}</ul>
     </div>"""
 
-    return f"""<section id="page-extra" class="page-sec">
+    return f"""<section id="page-extra" class="page-sec" style="--c:#7c6fe8">
+  {DAY_TAB_HTML}
   <div class="page">
     <div class="dayhead" style="--c:#7c6fe8">
       <div class="dt" style="color:#7c6fe8;font-size:30px">기타사항</div>
@@ -595,7 +596,7 @@ a{{text-decoration:none;color:inherit}}
 
 </div>
 <script>
-var DAY_COLOR = {{wed:'var(--wed)',thu:'var(--thu)',fri:'var(--fri)',sat:'var(--sat)'}};
+var DAY_COLOR = {{wed:'var(--wed)',thu:'var(--thu)',fri:'var(--fri)',sat:'var(--sat)',extra:'#7c6fe8'}};
 
 function toggleMealForm(){{
   var wrap = document.getElementById('myform-wrap');
