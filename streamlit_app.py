@@ -80,7 +80,7 @@ def load_all_data():
 
             elif kind == "기타":
                 category = row.get("요일/분류", "").strip()
-                content  = row.get("메뉴/내용", "").strip()
+                content  = row.get("메뉴/내용", "").strip() or row.get("식사종류", "").strip()
                 note     = row.get("메모/비고", "").strip()
                 if not category or not content:
                     continue
@@ -122,7 +122,7 @@ def get_default_extra():
     return {
         "아침 공통 메뉴": [
             ("바나나 · 삶은계란 · 시리얼 · 우유 · 식빵 · 잼 · 컵라면", ""),
-            ("커피 알아보기 (철수 형)", "확인필요"),
+            ("커피 알아보기 (철수 형)", "확인완료"),
         ],
         "상시 반찬": [("김치 · 단무지 · 김", "")],
         "상시 간식": [
