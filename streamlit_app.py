@@ -6,6 +6,7 @@ import base64
 import csv
 import io
 import urllib.request
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import streamlit as st
@@ -46,6 +47,35 @@ FORM_RESPONSE_SHEET_ID = "1acelubO2of-IFVZOahqnbZp6p4Lfd2p8OIf4ECTMdGo"
 FORM_RESPONSE_CSV_URL = (
     f"https://docs.google.com/spreadsheets/d/{FORM_RESPONSE_SHEET_ID}/gviz/tq?tqx=out:csv"
 )
+
+# 아침 커피 주문 폼 (요일마다 별도 폼, 이름 + 음료 선택, 담당: 철수)
+KST = timezone(timedelta(hours=9))
+DRINK_FORMS = {
+    "2026-07-29": {
+        "label": "수요일",
+        "form_url": "https://docs.google.com/forms/d/e/1FAIpQLSdqC65oxkZBCuBKZI845yA0PiQMNoxK1QsJBUNI4ScLryTLyA/viewform",
+        "sheet_id": "11wpG6oE6y36txCCGD3SEyHaUGof5rX5bgxIamJ2w2HE",
+    },
+    "2026-07-30": {
+        "label": "목요일",
+        "form_url": "https://docs.google.com/forms/d/e/1FAIpQLSemTAu8pNeHGfKh5nGNOJkuO9b8Nxb5wAdZCRHz2gU1ZyXXMA/viewform",
+        "sheet_id": "1XY2UNd08vbBkEkSmJmbOSYpvDxh92-PUB-4Z2DMpegE",
+    },
+    "2026-07-31": {
+        "label": "금요일",
+        "form_url": "https://docs.google.com/forms/d/e/1FAIpQLSfPXwgLA-oNKbPKKIn1zO-MhmVVd2Y426iZAyq69cFvYLHnVA/viewform",
+        "sheet_id": "1cpx_1ppncSNWl8tDbTPVD4tY9in14BDL0sl4ajVblGo",
+    },
+    "2026-08-01": {
+        "label": "토요일",
+        "form_url": "https://docs.google.com/forms/d/e/1FAIpQLSc5WElJPctXq_geTIYHmmabQ9_rBtg2RdDCKbAgD5tWjIr9nQ/viewform",
+        "sheet_id": "1hLnGdBE1bEDU7a_xnMH-y2GfVnXZisz4vsq1wcvuJJY",
+    },
+}
+
+def get_today_drink_form():
+    today_str = datetime.now(KST).strftime("%Y-%m-%d")
+    return DRINK_FORMS.get(today_str, DRINK_FORMS["2026-07-29"])
 
 # ─────────────────────── 데이터 로드 ───────────────────────
 @st.cache_data(ttl=60)
@@ -283,6 +313,10 @@ def build_html(meal_data, sheet_url, extra_data=None):
         extra_data = get_default_extra()
     poster = b64("assets/poster.png", "image/png")
     team   = b64("assets/team.jpg",   "image/jpeg")
+    drink_today = get_today_drink_form()
+    drink_form_url = drink_today["form_url"]
+    drink_response_url = f"https://docs.google.com/spreadsheets/d/{drink_today['sheet_id']}/edit"
+    drink_label = drink_today["label"]
 
     wed_html = build_day_section("wed", "수요일", "하루를 열며 차분히 시작해요.",          "--wed", meal_data.get("수요일", {}))
     thu_html = build_day_section("thu", "목요일", "메인 사역일 — 든든하게 채워요.",        "--thu", meal_data.get("목요일", {}))
@@ -503,6 +537,41 @@ a{{text-decoration:none;color:inherit}}
     <div class="tile-wide" onclick="show('team','people')">
       <span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="8.5" r="2.4"/><path d="M16 14.2A4.6 4.6 0 0 1 20.5 19"/></svg></span>
       <span class="tl">팀 소개 &amp; 기도제목</span>
+    </div>
+
+    <div style="text-align:center;padding:14px 20px 4px">
+      <div style="display:inline-block;background:#fff;border-radius:16px;padding:16px;
+                  box-shadow:0 4px 20px rgba(27,28,28,.07);border:1px solid var(--line)">
+        <img
+          src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=6&data={drink_form_url}"
+          alt="아침 커피 주문 폼 QR코드"
+          style="width:160px;height:160px;display:block;border-radius:6px"
+        >
+        <div style="margin-top:10px;font-size:13px;font-weight:800;color:var(--ink);
+                    display:flex;align-items:center;justify-content:center;gap:5px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)"
+               stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/>
+            <path d="M17 9h2a2 2 0 0 1 0 4h-2"/>
+            <path d="M8 3c0 1-1 1.5-1 2.5S8 7 8 7"/><path d="M12 3c0 1-1 1.5-1 2.5S12 7 12 7"/>
+          </svg>
+          {drink_label} 아침 커피 주문하기
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:3px">이름과 음료를 골라 제출해주세요</div>
+      </div>
+      <div style="margin-top:10px">
+        <a href="{drink_response_url}" target="_blank"
+           style="display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--ink-soft);
+                  border:1.5px solid var(--line);border-radius:999px;padding:9px 16px;font-size:12.5px;
+                  font-weight:700;text-decoration:none;-webkit-tap-highlight-color:transparent">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+          음료 조사 결과 보기
+        </a>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px">담당 · 철수</div>
     </div>
 
     <div class="welcome"><b>식사팀 가이드</b>요일을 눌러 그날의 식단을 확인하세요.</div>
