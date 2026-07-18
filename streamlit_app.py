@@ -298,15 +298,28 @@ def build_html(meal_data, sheet_url, extra_data=None):
     sat_sub = first_dish(meal_data, "토요일") or "마무리"
 
     if MEAL_FORM_EMBED_URL:
-        my_meal_btn = f'''<div onclick="toggleMealForm()"
+        form_response_url = f"https://docs.google.com/spreadsheets/d/{FORM_RESPONSE_SHEET_ID}/edit"
+        my_meal_btn = f'''<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px">
+      <div onclick="toggleMealForm()"
        style="display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--primary);
-              border:1.5px solid var(--primary);border-radius:999px;padding:10px 20px;font-size:13px;
+              border:1.5px solid var(--primary);border-radius:999px;padding:10px 16px;font-size:13px;
               font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-           stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
-      </svg>
-      내 담당 끼니 입력하기
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+        </svg>
+        내 담당 끼니 입력하기
+      </div>
+      <a href="{form_response_url}" target="_blank"
+         style="display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--ink-soft);
+                border:1.5px solid var(--line);border-radius:999px;padding:10px 16px;font-size:13px;
+                font-weight:700;text-decoration:none;-webkit-tap-highlight-color:transparent">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+        담당 끼니 입력 사항 전체 보기
+      </a>
     </div>
     <div style="margin-top:10px;text-align:left;background:var(--inner);border-radius:var(--r-md);
                 padding:11px 14px;font-size:12px;color:var(--ink-soft);line-height:1.6">
