@@ -190,13 +190,6 @@ def b64(path, mime):
 def esc(s):
     return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
-def first_dish(meal_data, day):
-    for mt in MEAL_ORDER:
-        d = meal_data.get(day, {}).get(mt, {}).get("dish", "")
-        if d:
-            return d[:14]
-    return ""
-
 # ─────────────────────── 요일 탭 HTML (식단 내 이동) ───────────────────────
 DAY_TAB_HTML = """
 <div class="daytab-bar">
@@ -291,11 +284,6 @@ def build_html(meal_data, sheet_url, extra_data=None):
     thu_html = build_day_section("thu", "목요일", "메인 사역일 — 든든하게 채워요.",        "--thu", meal_data.get("목요일", {}))
     fri_html = build_day_section("fri", "금요일", "일정을 확인하고 은혜로운 하루 보내세요.", "--fri", meal_data.get("금요일", {}))
     sat_html = build_day_section("sat", "토요일", "잘 마무리하고 평안히 돌아가요.",        "--sat", meal_data.get("토요일", {}))
-
-    wed_sub = first_dish(meal_data, "수요일") or "떡만두국"
-    thu_sub = first_dish(meal_data, "목요일") or "메인 사역일"
-    fri_sub = first_dish(meal_data, "금요일") or "노방전도"
-    sat_sub = first_dish(meal_data, "토요일") or "마무리"
 
     if MEAL_FORM_EMBED_URL:
         form_response_url = f"https://docs.google.com/spreadsheets/d/{FORM_RESPONSE_SHEET_ID}/edit"
@@ -520,27 +508,22 @@ a{{text-decoration:none;color:inherit}}
       <div class="day-tile" style="--c:var(--wed)" onclick="show('wed','meal')">
         <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 10h14v6a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3z"/><path d="M3 10h18M8 10V8.5M16 10V8.5M9.5 5.5c.6-1 2.4-1 3 0M12.5 4c.6-1 2.4-1 3 0"/></svg></span>
         <span class="dl">수</span>
-        <span class="ds">{wed_sub}</span>
       </div>
       <div class="day-tile" style="--c:var(--thu)" onclick="show('thu','meal')">
         <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/></svg></span>
         <span class="dl">목</span>
-        <span class="ds">{thu_sub}</span>
       </div>
       <div class="day-tile" style="--c:var(--fri)" onclick="show('fri','meal')">
         <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4.5" r="1.8"/><path d="M11 8.5 9 13l2.5 1.5L13 21M13 11l3 1.5M9 13l-2 5M13 11l-1-2.5"/></svg></span>
         <span class="dl">금</span>
-        <span class="ds">{fri_sub}</span>
       </div>
       <div class="day-tile" style="--c:var(--sat)" onclick="show('sat','meal')">
         <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16l-1 11H5z"/><path d="M4 9 5.5 4h13L20 9M9 9V4.5M15 9V4.5"/></svg></span>
         <span class="dl">토</span>
-        <span class="ds">{sat_sub}</span>
       </div>
       <div class="day-tile" style="--c:#7c6fe8" onclick="show('extra','extra')">
         <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M9 9h6M9 12h6M9 15h4"/></svg></span>
         <span class="dl">기타</span>
-        <span class="ds">안내사항</span>
       </div>
     </div>
 
