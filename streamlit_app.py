@@ -321,16 +321,8 @@ def build_html(meal_data, sheet_url, extra_data=None):
         담당 끼니 입력 사항 전체 보기
       </a>
     </div>
-    <div style="margin-top:10px;text-align:left;background:var(--inner);border-radius:var(--r-md);
-                padding:11px 14px;font-size:12px;color:var(--ink-soft);line-height:1.6">
-      <div style="display:flex;gap:6px">
-        <span style="flex:none">·</span>
-        <span>같은 요일·끼니로 다시 제출하면 이전 내용을 덮어써요.<br>수정할 땐 전체 내용을 다시 적어주세요.</span>
-      </div>
-      <div style="display:flex;gap:6px;margin-top:7px">
-        <span style="flex:none">·</span>
-        <span>제출 후엔 하단 <b>"식단"</b> 탭에서 해당 요일을 눌러 확인하세요.<br>반영까지 최대 1분 걸려요.</span>
-      </div>
+    <div style="text-align:center;font-size:11px;color:#7d8278;margin-top:8px">
+      마지막 제출이 최종본이 돼요 — 부분만 적지 말고 재료 전체를 다시 적어주세요.
     </div>
     <div id="myform-wrap" style="display:none;margin-top:14px;text-align:left">
       <iframe id="myform-iframe" style="width:100%;height:820px;border:none;border-radius:16px;
