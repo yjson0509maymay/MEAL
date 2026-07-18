@@ -394,19 +394,19 @@ a{{text-decoration:none;color:inherit}}
 .welcome{{text-align:center;margin:14px 4px 16px;color:var(--ink-soft);font-size:15px;line-height:1.55}}
 .welcome b{{display:block;font-size:18px;color:var(--primary);font-weight:800;margin-bottom:4px}}
 
-/* ── 홈: 수목금토 한 줄 타일 ── */
-.day-row{{display:flex;gap:10px;margin-bottom:10px}}
-.day-tile{{flex:1;background:var(--card);border-radius:var(--r-lg);padding:16px 6px 12px;
+/* ── 홈: 수목금토+기타 한 줄 타일 ── */
+.day-row{{display:flex;gap:6px;margin-bottom:10px}}
+.day-tile{{flex:1;min-width:0;background:var(--card);border-radius:var(--r-lg);padding:14px 3px 10px;
   box-shadow:0 6px 18px rgba(27,28,28,.07);display:flex;flex-direction:column;
-  align-items:center;gap:8px;border:1px solid var(--line);cursor:pointer;
+  align-items:center;gap:7px;border:1px solid var(--line);cursor:pointer;
   transition:transform .12s;-webkit-tap-highlight-color:transparent}}
 .day-tile:active{{transform:scale(.95)}}
-.day-tile .di{{width:34px;height:34px;border-radius:.7rem;
+.day-tile .di{{width:30px;height:30px;border-radius:.65rem;flex:none;
   background:color-mix(in srgb, var(--c) 16%, #fff);color:var(--c);
   display:flex;align-items:center;justify-content:center}}
-.day-tile .di svg{{width:18px;height:18px}}
-.day-tile .dl{{font-size:15px;font-weight:800;color:var(--ink)}}
-.day-tile .ds{{font-size:10px;color:var(--muted);text-align:center;line-height:1.3;word-break:keep-all}}
+.day-tile .di svg{{width:16px;height:16px}}
+.day-tile .dl{{font-size:14px;font-weight:800;color:var(--ink)}}
+.day-tile .ds{{font-size:9.5px;color:var(--muted);text-align:center;line-height:1.25;word-break:keep-all}}
 
 /* 팀 타일 */
 .tile-wide{{width:100%;background:var(--primary);color:#fff;border-radius:999px;
@@ -517,15 +517,16 @@ a{{text-decoration:none;color:inherit}}
         <span class="dl">토</span>
         <span class="ds">{sat_sub}</span>
       </div>
+      <div class="day-tile" style="--c:#7c6fe8" onclick="show('extra','extra')">
+        <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M9 9h6M9 12h6M9 15h4"/></svg></span>
+        <span class="dl">기타</span>
+        <span class="ds">안내사항</span>
+      </div>
     </div>
 
     <div class="tile-wide" onclick="show('team','people')">
       <span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="8.5" r="2.4"/><path d="M16 14.2A4.6 4.6 0 0 1 20.5 19"/></svg></span>
       <span class="tl">팀 소개 &amp; 기도제목</span>
-    </div>
-    <div class="tile-wide" style="background:#7c6fe8;margin-top:10px" onclick="show('extra','extra')">
-      <span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M9 9h6M9 12h6M9 15h4"/></svg></span>
-      <span class="tl">기타사항</span>
     </div>
 
     {sheet_btn}
