@@ -5,19 +5,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --surface:#fbf9f8; --card:#ffffff; --card-low:#f6f4f3;
-  --inner:#edeceb; --inner-warm:#e7e6da;
+  --surface:#fdf8ee; --card:#ffffff; --card-low:#f8f1de;
+  --inner:#e8f3e4; --inner-warm:#fdecd6;
   --primary:#4e6448; --primary-dim:#a9c2a0; --primary-soft:#e7eee2;
-  --ink:#1b1c1c; --ink-soft:#434841; --muted:#7d8278; --line:#e8e6e4;
-  --wed:#5b89b0; --thu:#6a9b4f; --fri:#e07a3c; --sat:#dca22c;
-  --r-md:.75rem; --r-lg:1rem; --r-xl:1.5rem;
+  --ink:#29281f; --ink-soft:#55564a; --muted:#8a8c78; --line:#ece3cf;
+  --wed:#2fa8e8; --thu:#4cc26a; --fri:#ff8a4c; --sat:#ffc233;
+  --r-md:.9rem; --r-lg:1.25rem; --r-xl:1.75rem;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{background:#e9e6e3}
+html,body{background:#f6efdd}
 body{font-family:'Noto Sans KR','Plus Jakarta Sans',sans-serif;color:var(--ink);
   -webkit-font-smoothing:antialiased}
 .app{max-width:430px;margin:0 auto;min-height:100vh;background:var(--surface);
-  position:relative;padding-bottom:92px;overflow:hidden}
+  position:relative;padding-bottom:108px;overflow:hidden}
 a{text-decoration:none;color:inherit}
 
 /* top bar */
@@ -42,18 +42,20 @@ a{text-decoration:none;color:inherit}
   margin-bottom:4px}
 .grid{display:flex;flex-wrap:wrap;gap:14px}
 .tile{width:calc(50% - 7px);background:var(--card);border-radius:var(--r-xl);
-  padding:20px 16px 16px;box-shadow:0 4px 20px rgba(27,28,28,.05);display:flex;
-  flex-direction:column;align-items:center;gap:10px;border-top:4px solid var(--c);
-  min-height:128px;justify-content:center;transition:transform .12s}
+  padding:22px 16px 18px;box-shadow:0 6px 22px rgba(27,28,28,.06);display:flex;
+  flex-direction:column;align-items:center;gap:12px;border:1px solid var(--line);
+  min-height:132px;justify-content:center;transition:transform .12s}
 .tile:active{transform:scale(.97)}
-.tile .ti{width:40px;height:40px;color:var(--c)}
-.tile .ti svg{width:40px;height:40px}
+.tile .ti{width:52px;height:52px;border-radius:1.15rem;
+  background:color-mix(in srgb, var(--c) 16%, #fff);color:var(--c);
+  display:flex;align-items:center;justify-content:center}
+.tile .ti svg{width:26px;height:26px}
 .tile .tl{font-size:18px;font-weight:800;color:var(--ink)}
 .tile .ts{font-size:12px;color:var(--muted);text-align:center;line-height:1.4}
 .tile-wide{width:100%;background:var(--primary);color:#fff;flex-direction:row;
-  gap:12px;border-top:none;min-height:auto;padding:18px 20px;justify-content:center;
-  box-shadow:0 6px 22px rgba(78,100,72,.28)}
-.tile-wide .ti{width:26px;height:26px;color:#fff}
+  gap:12px;border:none;border-radius:999px;min-height:auto;padding:18px 24px;
+  justify-content:center;box-shadow:0 6px 22px rgba(78,100,72,.28)}
+.tile-wide .ti{width:26px;height:26px;background:none;color:#fff}
 .tile-wide .ti svg{width:26px;height:26px}
 .tile-wide .tl{color:#fff;font-size:17px}
 
@@ -61,8 +63,9 @@ a{text-decoration:none;color:inherit}
 .dayhead{text-align:center;padding:8px 0 18px}
 .dayhead .dt{font-size:38px;font-weight:900;color:var(--c);letter-spacing:-.02em}
 .dayhead .ds{font-size:15px;color:var(--muted);margin-top:4px}
-.mcard{background:var(--card);border-radius:var(--r-lg);padding:16px;margin-bottom:16px;
-  border-top:5px solid var(--c);box-shadow:0 4px 20px rgba(27,28,28,.05)}
+.mcard{background:var(--card);border-radius:var(--r-xl);padding:18px;margin-bottom:16px;
+  border:1px solid var(--line);border-top:5px solid var(--c);
+  box-shadow:0 6px 22px rgba(27,28,28,.06)}
 .mhead{display:flex;align-items:center;gap:9px;margin-bottom:11px}
 .mhead .mi{width:24px;height:24px;color:var(--c);flex:none}
 .mhead .mi svg{width:24px;height:24px}
@@ -80,9 +83,9 @@ a{text-decoration:none;color:inherit}
 /* ---- TEAM ---- */
 .teamphoto{width:100%;border-radius:var(--r-lg);display:block;
   box-shadow:0 6px 22px rgba(27,28,28,.08);margin-bottom:26px}
-.archcard{background:var(--card);border-radius:46% 46% var(--r-lg) var(--r-lg)
-  / 22% 22% var(--r-lg) var(--r-lg);padding:42px 26px 30px;text-align:center;
-  box-shadow:0 4px 24px rgba(27,28,28,.06);margin-bottom:24px}
+.archcard{background:var(--card);border-radius:var(--r-xl);padding:38px 26px 30px;
+  text-align:center;border-top:5px solid var(--primary);
+  box-shadow:0 6px 24px rgba(27,28,28,.07);margin-bottom:24px}
 .archcard .cross{width:30px;height:30px;color:#caa24a;margin:0 auto 8px}
 .archcard .cross svg{width:30px;height:30px}
 .archcard h2{font-size:24px;font-weight:900;color:var(--ink);margin-bottom:22px}
@@ -91,8 +94,8 @@ a{text-decoration:none;color:inherit}
   color:var(--ink-soft)}
 .prayers li::before{counter-increment:p;content:counter(p) ".";font-weight:800;
   color:var(--primary);flex:none;min-width:16px}
-.support{background:var(--card);border-radius:var(--r-lg);padding:22px;text-align:center;
-  box-shadow:0 4px 20px rgba(27,28,28,.05)}
+.support{background:var(--card);border-radius:var(--r-xl);padding:24px;text-align:center;
+  border:1px solid var(--line);box-shadow:0 6px 22px rgba(27,28,28,.06)}
 .support h3{font-size:18px;font-weight:800;margin-bottom:10px}
 .support .acc{font-size:18px;font-weight:700;color:var(--ink)}
 .support .nm{font-size:15px;color:var(--ink-soft);margin-top:2px}
@@ -102,10 +105,11 @@ a{text-decoration:none;color:inherit}
   line-height:1.5}
 
 /* ---- bottom nav ---- */
-.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;
-  max-width:430px;background:#fff;border-top:1px solid var(--line);
-  display:flex;justify-content:space-around;padding:9px 8px
-  calc(9px + env(safe-area-inset-bottom));z-index:30}
+.tabbar{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);
+  width:calc(100% - 32px);max-width:398px;background:#fff;border:1px solid var(--line);
+  border-radius:999px;display:flex;justify-content:space-around;
+  padding:9px 8px calc(9px + env(safe-area-inset-bottom));
+  box-shadow:0 10px 30px rgba(27,28,28,.12);z-index:30}
 .tab{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);
   font-size:11px;font-weight:600;padding:6px 14px;border-radius:999px}
 .tab svg{width:23px;height:23px}

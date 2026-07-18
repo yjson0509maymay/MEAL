@@ -24,7 +24,7 @@ st.markdown("""
   header[data-testid="stHeader"]{display:none}
   #MainMenu, footer{visibility:hidden}
   .block-container{padding:0 !important;max-width:100% !important}
-  [data-testid="stAppViewContainer"]{background:#e9e6e3}
+  [data-testid="stAppViewContainer"]{background:#f6efdd}
   iframe{display:block;margin:0 auto}
 </style>
 """, unsafe_allow_html=True)
@@ -37,6 +37,14 @@ SHEET_NAME = "meals"
 CSV_URL = (
     f"https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}"
     f"/gviz/tq?tqx=out:csv&sheet={SHEET_NAME}"
+)
+
+# 담당자 · 준비재료 입력용 구글폼 링크 (폼 생성 후 이 값만 채우면 자동으로 버튼이 활성화됨)
+MEAL_FORM_EMBED_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdJaiAH29MG_AihiZfKYuvJBBto4CxnPf0KOw7Gh5NMThC11g/viewform?embedded=true"
+# 폼 응답이 쌓이는 스프레드시트 (담당자·준비재료를 요일 카드에 자동으로 합쳐 보여줄 때 사용)
+FORM_RESPONSE_SHEET_ID = "1acelubO2of-IFVZOahqnbZp6p4Lfd2p8OIf4ECTMdGo"
+FORM_RESPONSE_CSV_URL = (
+    f"https://docs.google.com/spreadsheets/d/{FORM_RESPONSE_SHEET_ID}/gviz/tq?tqx=out:csv"
 )
 
 # ─────────────────────── 데이터 로드 ───────────────────────
@@ -66,6 +74,8 @@ def load_all_data():
                     "dish": row.get("메뉴/내용", "").strip(),
                     "memo": row.get("메모/비고", "").strip(),
                     "time": row.get("시간", "").strip(),
+                    "owner": row.get("담당자", "").strip(),
+                    "ingredients": row.get("준비재료및수량", "").strip(),
                 }
 
             elif kind == "기타":
@@ -78,12 +88,35 @@ def load_all_data():
                     extra_data[category] = []
                 extra_data[category].append((content, note))
 
+        meal_data = meal_data if meal_data else get_default_data()
+        meal_data = apply_form_responses(meal_data)
         return (
-            meal_data  if meal_data  else get_default_data(),
+            meal_data,
             extra_data if extra_data else get_default_extra(),
         )
     except Exception:
-        return get_default_data(), get_default_extra()
+        return apply_form_responses(get_default_data()), get_default_extra()
+
+def apply_form_responses(meal_data):
+    """구글폼 응답(담당자·준비재료)을 해당 요일·끼니 카드에 합쳐 넣습니다."""
+    try:
+        req = urllib.request.Request(FORM_RESPONSE_CSV_URL, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            raw = resp.read().decode("utf-8")
+        reader = csv.DictReader(io.StringIO(raw))
+        for row in reader:
+            day       = row.get("요일", "").strip()
+            meal_type = row.get("식사종류", "").strip()
+            owner     = row.get("담당자 이름", "").strip()
+            ingredients = row.get("준비재료 및 수량", "").strip()
+            if day in meal_data and meal_type in meal_data[day]:
+                if owner:
+                    meal_data[day][meal_type]["owner"] = owner
+                if ingredients:
+                    meal_data[day][meal_type]["ingredients"] = ingredients
+    except Exception:
+        pass
+    return meal_data
 
 def get_default_extra():
     return {
@@ -112,26 +145,26 @@ def get_default_extra():
 def get_default_data():
     return {
         "수요일": {
-            "저녁": {"dish": "떡만두국", "memo": "현호 담당 · 들통 대량 조리", "time": "18:00"},
-            "야식": {"dish": "수박 · 방울토마토 · 과자", "memo": "간단하게", "time": ""},
+            "저녁": {"dish": "떡만두국", "memo": "간단한거", "time": "18:00", "owner": "현호",
+                     "ingredients": "만두 00봉지, 떡국떡 00봉지, 파 00단, 사골육수 00g봉지, 후추"},
+            "야식": {"dish": "수박 · 방울토마토 등 과일 · 과자", "memo": "간단한거", "time": "", "owner": "", "ingredients": ""},
         },
         "목요일": {
-            "아침": {"dish": "조식 & 새벽 큐티", "memo": "바나나·삶은계란·시리얼·우유·식빵·잼·컵라면", "time": "07:00"},
-            "점심": {"dish": "소불고기 덮밥 + 오이냉국", "memo": "소불고기+당면+버섯 / 담당: 설희", "time": ""},
-            "간식": {"dish": "화채 + 아이스크림", "memo": "공원 전체 행사 외부 지원", "time": "14:00–16:00"},
-            "저녁": {"dish": "보쌈 + 빔국수 + 쌈", "memo": "든든하게+시원하게 / 담당: 재화형님", "time": ""},
-            "야식": {"dish": "떡볶이 세트", "memo": "직접 만들기", "time": ""},
+            "아침": {"dish": "조식 & 새벽 큐티", "memo": "바나나·삶은계란·시리얼·우유·식빵·잼·컵라면", "time": "07:00", "owner": "", "ingredients": ""},
+            "점심": {"dish": "소불고기 덮밥 + 오이냉국", "memo": "든든한거(육류)", "time": "", "owner": "설희", "ingredients": ""},
+            "간식": {"dish": "화채 + 아이스크림", "memo": "시원한거", "time": "14:00–16:00", "owner": "", "ingredients": ""},
+            "저녁": {"dish": "보쌈 + 빔국수 + 쌈", "memo": "든든한거+시원한거", "time": "", "owner": "재화형님", "ingredients": ""},
+            "야식": {"dish": "떡볶이 세트", "memo": "직접 만들기", "time": "", "owner": "미정", "ingredients": ""},
         },
         "금요일": {
-            "아침": {"dish": "조식 & 새벽 큐티", "memo": "전날 저녁 방으로 미리 배달", "time": "07:00"},
-            "오전": {"dish": "노방전도", "memo": "공원 전체 행사 · 다과 지참", "time": ""},
-            "점심": {"dish": "가정식 백반", "memo": "계란말이+김치찌개+제육볶음 / 담당: 현호", "time": ""},
-            "저녁": {"dish": "외식 (식당)", "memo": "식당 장소 및 메뉴 선정 완료 필요", "time": ""},
-            "야식": {"dish": "간식 없음", "memo": "외식 및 카페", "time": ""},
+            "아침": {"dish": "조식 & 새벽 큐티", "memo": "전날 저녁 방으로 미리 배달", "time": "07:00", "owner": "", "ingredients": ""},
+            "오전": {"dish": "노방전도", "memo": "공원 전체 행사 · 다과 지참", "time": "", "owner": "", "ingredients": ""},
+            "점심": {"dish": "가정식 백반 (계란말이+김치찌개+제육볶음+기타반찬)", "memo": "백반", "time": "", "owner": "현호", "ingredients": ""},
+            "저녁": {"dish": "외식 (식당)", "memo": "외식 및 카페", "time": "", "owner": "", "ingredients": ""},
         },
         "토요일": {
-            "아침": {"dish": "조식 & 새벽 큐티", "memo": "숙소 비품 및 잔여 식자재 활용", "time": "07:00"},
-            "점심": {"dish": "외식 (식당)", "memo": "장소·메뉴 선정 · 식사 후 행사 마무리", "time": ""},
+            "아침": {"dish": "조식 & 새벽 큐티", "memo": "숙소 비품 및 잔여 식자재 활용", "time": "07:00", "owner": "", "ingredients": ""},
+            "점심": {"dish": "외식 (식당)", "memo": "장소·메뉴 선정 · 식사 후 행사 마무리", "time": "", "owner": "", "ingredients": ""},
         },
     }
 
@@ -167,11 +200,11 @@ def first_dish(meal_data, day):
 # ─────────────────────── 요일 탭 HTML (식단 내 이동) ───────────────────────
 DAY_TAB_HTML = """
 <div class="daytab-bar">
-  <span class="daytab" onclick="show('wed','meal')" id="dtab-wed">수</span>
-  <span class="daytab" onclick="show('thu','meal')" id="dtab-thu">목</span>
-  <span class="daytab" onclick="show('fri','meal')" id="dtab-fri">금</span>
-  <span class="daytab" onclick="show('sat','meal')" id="dtab-sat">토</span>
-  <span class="daytab" onclick="show('extra','extra')" id="dtab-extra">기타</span>
+  <span class="daytab" onclick="show('wed','meal')" data-day="wed">수</span>
+  <span class="daytab" onclick="show('thu','meal')" data-day="thu">목</span>
+  <span class="daytab" onclick="show('fri','meal')" data-day="fri">금</span>
+  <span class="daytab" onclick="show('sat','meal')" data-day="sat">토</span>
+  <span class="daytab" onclick="show('extra','extra')" data-day="extra">기타</span>
 </div>"""
 
 def build_day_section(day_id, day_label, subtitle, color_var, meals):
@@ -183,6 +216,16 @@ def build_day_section(day_id, day_label, subtitle, color_var, meals):
         icon = MEAL_ICONS.get(mt, MEAL_ICONS["저녁"])
         time_badge = f'<span class="mt">{esc(info["time"])}</span>' if info.get("time") else ""
         warm = " warm" if mt == "야식" else ""
+        owner_val = info.get("owner", "").strip()
+        owner_tag = (
+            f'<div class="owner">담당 · {esc(owner_val)}</div>' if owner_val
+            else '<div class="owner owner-empty">담당 미정</div>'
+        )
+        ing_val = info.get("ingredients", "").strip()
+        ingredients_block = (
+            f'<div class="ingredients"><b>준비재료</b>{esc(ing_val)}</div>' if ing_val
+            else '<div class="ingredients ingredients-empty"><b>준비재료</b>아직 입력되지 않았어요</div>'
+        )
         cards += f"""
 <div class="mcard" style="--c:var({color_var})">
   <div class="mhead">
@@ -192,7 +235,9 @@ def build_day_section(day_id, day_label, subtitle, color_var, meals):
   <div class="inner{warm}">
     <span class="dish">{esc(info.get("dish",""))}</span>
     <div class="memo">{esc(info.get("memo",""))}</div>
+    {owner_tag}
   </div>
+  {ingredients_block}
 </div>"""
 
     return f"""<section id="page-{day_id}" class="page-sec" style="--c:var({color_var})">
@@ -227,8 +272,8 @@ def build_extra_section(extra_data):
 
     return f"""<section id="page-extra" class="page-sec">
   <div class="page">
-    <div class="dayhead" style="--c:#6b7c93">
-      <div class="dt" style="color:#6b7c93;font-size:30px">기타사항</div>
+    <div class="dayhead" style="--c:#7c6fe8">
+      <div class="dt" style="color:#7c6fe8;font-size:30px">기타사항</div>
       <div class="ds">준비물 · 상시 구비품 · 기타 안내</div>
     </div>
     {sections_html}
@@ -252,6 +297,30 @@ def build_html(meal_data, sheet_url, extra_data=None):
     fri_sub = first_dish(meal_data, "금요일") or "노방전도"
     sat_sub = first_dish(meal_data, "토요일") or "마무리"
 
+    if MEAL_FORM_EMBED_URL:
+        my_meal_btn = f'''<div onclick="toggleMealForm()"
+       style="display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--primary);
+              border:1.5px solid var(--primary);border-radius:999px;padding:10px 20px;font-size:13px;
+              font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+      </svg>
+      내 담당 끼니 입력하기
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5">
+      같은 요일·끼니로 다시 제출하면 이전 내용을 덮어써요 — 수정할 땐 전체 내용을 다시 적어주세요
+    </div>
+    <div id="myform-wrap" style="display:none;margin-top:14px;text-align:left">
+      <iframe id="myform-iframe" style="width:100%;height:820px;border:none;border-radius:16px;
+              box-shadow:0 4px 20px rgba(27,28,28,.07)" loading="lazy"></iframe>
+    </div>'''
+    else:
+        my_meal_btn = '''<div style="display:inline-block;background:var(--card-low);color:var(--muted);
+         border-radius:999px;padding:10px 20px;font-size:12.5px;font-weight:700">
+      내 담당 끼니 입력 폼 준비 중
+    </div>'''
+
     sheet_btn = f"""
 <div style="text-align:center;padding:14px 20px 0">
   <a href="{sheet_url}" target="_blank"
@@ -263,9 +332,12 @@ def build_html(meal_data, sheet_url, extra_data=None):
       <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
       <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
     </svg>
-    식단 수정하기 (구글 시트)
+    메뉴 전체 수정 (구글 시트)
   </a>
   <div style="font-size:11px;color:#7d8278;margin-top:6px">수정 후 1분 이내 자동 반영</div>
+</div>
+<div style="text-align:center;padding:10px 20px 0">
+  {my_meal_btn}
 </div>
 <div style="text-align:center;padding:20px 20px 4px">
   <div style="display:inline-block;background:#fff;border-radius:16px;padding:16px;
@@ -295,16 +367,16 @@ def build_html(meal_data, sheet_url, extra_data=None):
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
 <style>
 :root{{
-  --surface:#fbf9f8;--card:#ffffff;--inner:#edeceb;--inner-warm:#e7e6da;
+  --surface:#fdf8ee;--card:#ffffff;--inner:#e8f3e4;--inner-warm:#fdecd6;
   --primary:#4e6448;--primary-dim:#a9c2a0;
-  --ink:#1b1c1c;--ink-soft:#434841;--muted:#7d8278;--line:#e8e6e4;
-  --wed:#5b89b0;--thu:#6a9b4f;--fri:#e07a3c;--sat:#dca22c;
-  --r-md:.75rem;--r-lg:1rem;--r-xl:1.5rem;
+  --ink:#29281f;--ink-soft:#55564a;--muted:#8a8c78;--line:#ece3cf;
+  --wed:#2fa8e8;--thu:#4cc26a;--fri:#ff8a4c;--sat:#ffc233;
+  --r-md:.9rem;--r-lg:1.25rem;--r-xl:1.75rem;
 }}
 *{{box-sizing:border-box;margin:0;padding:0}}
 html,body{{background:var(--surface)}}
 body{{font-family:'Noto Sans KR','Plus Jakarta Sans',sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}}
-.app{{max-width:430px;margin:0 auto;min-height:100vh;background:var(--surface);padding-bottom:92px}}
+.app{{max-width:430px;margin:0 auto;min-height:100vh;background:var(--surface);padding-bottom:108px}}
 a{{text-decoration:none;color:inherit}}
 
 /* 탑바 */
@@ -323,18 +395,20 @@ a{{text-decoration:none;color:inherit}}
 
 /* ── 홈: 수목금토 한 줄 타일 ── */
 .day-row{{display:flex;gap:10px;margin-bottom:10px}}
-.day-tile{{flex:1;background:var(--card);border-radius:var(--r-lg);padding:14px 6px 12px;
-  box-shadow:0 4px 16px rgba(27,28,28,.06);display:flex;flex-direction:column;
-  align-items:center;gap:6px;border-top:4px solid var(--c);cursor:pointer;
+.day-tile{{flex:1;background:var(--card);border-radius:var(--r-lg);padding:16px 6px 12px;
+  box-shadow:0 6px 18px rgba(27,28,28,.07);display:flex;flex-direction:column;
+  align-items:center;gap:8px;border:1px solid var(--line);cursor:pointer;
   transition:transform .12s;-webkit-tap-highlight-color:transparent}}
 .day-tile:active{{transform:scale(.95)}}
-.day-tile .di{{width:28px;height:28px;color:var(--c)}}
-.day-tile .di svg{{width:28px;height:28px}}
+.day-tile .di{{width:34px;height:34px;border-radius:.7rem;
+  background:color-mix(in srgb, var(--c) 16%, #fff);color:var(--c);
+  display:flex;align-items:center;justify-content:center}}
+.day-tile .di svg{{width:18px;height:18px}}
 .day-tile .dl{{font-size:15px;font-weight:800;color:var(--ink)}}
 .day-tile .ds{{font-size:10px;color:var(--muted);text-align:center;line-height:1.3;word-break:keep-all}}
 
 /* 팀 타일 */
-.tile-wide{{width:100%;background:var(--primary);color:#fff;border-radius:var(--r-lg);
+.tile-wide{{width:100%;background:var(--primary);color:#fff;border-radius:999px;
   padding:16px 20px;display:flex;align-items:center;justify-content:center;gap:10px;
   box-shadow:0 6px 22px rgba(78,100,72,.28);cursor:pointer;margin-bottom:4px;
   -webkit-tap-highlight-color:transparent;transition:transform .12s}}
@@ -355,7 +429,7 @@ a{{text-decoration:none;color:inherit}}
 .dayhead{{text-align:center;padding:16px 0 16px}}
 .dayhead .dt{{font-size:36px;font-weight:900;color:var(--c);letter-spacing:-.02em}}
 .dayhead .ds{{font-size:14px;color:var(--muted);margin-top:4px}}
-.mcard{{background:var(--card);border-radius:var(--r-lg);padding:16px;margin-bottom:14px;border-top:5px solid var(--c);box-shadow:0 4px 20px rgba(27,28,28,.05)}}
+.mcard{{background:var(--card);border-radius:var(--r-xl);padding:18px;margin-bottom:14px;border:1px solid var(--line);border-top:5px solid var(--c);box-shadow:0 6px 22px rgba(27,28,28,.06)}}
 .mhead{{display:flex;align-items:center;gap:9px;margin-bottom:11px}}
 .mhead .mi{{width:24px;height:24px;color:var(--c);flex:none}}
 .mhead .mi svg{{width:24px;height:24px}}
@@ -365,9 +439,17 @@ a{{text-decoration:none;color:inherit}}
 .inner.warm{{background:var(--inner-warm)}}
 .inner .dish{{font-size:16px;font-weight:800;color:var(--ink)}}
 .inner .memo{{font-size:13px;color:var(--ink-soft);line-height:1.55;margin-top:4px}}
+.owner{{margin-top:8px;display:inline-block;font-size:11px;font-weight:800;color:var(--primary);
+  background:var(--primary-soft);padding:3px 10px;border-radius:999px}}
+.owner-empty{{color:var(--muted);background:var(--card-low)}}
+.ingredients{{margin-top:10px;padding:9px 12px;background:var(--card-low);border-radius:var(--r-md);
+  font-size:12px;color:var(--ink-soft);line-height:1.6}}
+.ingredients b{{display:block;font-size:11px;font-weight:800;color:var(--ink);margin-bottom:2px}}
+.ingredients-empty{{color:var(--muted);font-style:italic}}
+.ingredients-empty b{{color:var(--muted)}}
 
 /* 기타사항 */
-.info-section{{background:var(--card);border-radius:var(--r-lg);padding:18px;margin-bottom:14px;box-shadow:0 4px 20px rgba(27,28,28,.05)}}
+.info-section{{background:var(--card);border-radius:var(--r-xl);padding:18px;margin-bottom:14px;border:1px solid var(--line);box-shadow:0 6px 22px rgba(27,28,28,.06)}}
 .info-section h3{{font-size:15px;font-weight:800;color:var(--primary);margin-bottom:10px;display:flex;align-items:center;gap:6px}}
 .info-list{{list-style:none;padding:0}}
 .info-list li{{font-size:13.5px;color:var(--ink-soft);line-height:1.6;padding:3px 0;border-bottom:1px solid var(--line)}}
@@ -376,13 +458,13 @@ a{{text-decoration:none;color:inherit}}
 
 /* 팀 */
 .teamphoto{{width:100%;border-radius:var(--r-lg);display:block;box-shadow:0 6px 22px rgba(27,28,28,.08);margin-bottom:22px}}
-.archcard{{background:var(--card);border-radius:46% 46% var(--r-lg) var(--r-lg)/22% 22% var(--r-lg) var(--r-lg);padding:38px 24px 26px;text-align:center;box-shadow:0 4px 24px rgba(27,28,28,.06);margin-bottom:20px}}
+.archcard{{background:var(--card);border-radius:var(--r-xl);padding:34px 24px 26px;text-align:center;border-top:5px solid var(--primary);box-shadow:0 6px 24px rgba(27,28,28,.07);margin-bottom:20px}}
 .archcard .cross{{width:28px;height:28px;color:#caa24a;margin:0 auto 8px}}
 .archcard h2{{font-size:22px;font-weight:900;color:var(--ink);margin-bottom:18px}}
 .prayers{{list-style:none;text-align:left;counter-reset:p}}
 .prayers li{{display:flex;gap:10px;margin-bottom:14px;font-size:14.5px;line-height:1.5;color:var(--ink-soft)}}
 .prayers li::before{{counter-increment:p;content:counter(p) ".";font-weight:800;color:var(--primary);flex:none;min-width:16px}}
-.support{{background:var(--card);border-radius:var(--r-lg);padding:20px;text-align:center;box-shadow:0 4px 20px rgba(27,28,28,.05)}}
+.support{{background:var(--card);border-radius:var(--r-xl);padding:22px;text-align:center;border:1px solid var(--line);box-shadow:0 6px 22px rgba(27,28,28,.06)}}
 .support h3{{font-size:17px;font-weight:800;margin-bottom:8px}}
 .support .acc{{font-size:17px;font-weight:700;color:var(--ink)}}
 .support .nm{{font-size:14px;color:var(--ink-soft);margin-top:2px}}
@@ -391,7 +473,7 @@ a{{text-decoration:none;color:inherit}}
 .foot{{text-align:center;font-size:12px;color:var(--muted);padding:20px 20px 8px;line-height:1.5}}
 
 /* 하단 탭바 */
-.tabbar{{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:9px 8px calc(9px + env(safe-area-inset-bottom));z-index:30}}
+.tabbar{{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:398px;background:#fff;border:1px solid var(--line);border-radius:999px;display:flex;justify-content:space-around;padding:9px 8px calc(9px + env(safe-area-inset-bottom));box-shadow:0 10px 30px rgba(27,28,28,.12);z-index:30}}
 .tab{{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);font-size:11px;font-weight:600;padding:6px 14px;border-radius:999px;cursor:pointer;-webkit-tap-highlight-color:transparent}}
 .tab svg{{width:22px;height:22px}}
 .tab.active{{color:#fff;background:var(--primary)}}
@@ -440,7 +522,7 @@ a{{text-decoration:none;color:inherit}}
       <span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="8.5" r="2.4"/><path d="M16 14.2A4.6 4.6 0 0 1 20.5 19"/></svg></span>
       <span class="tl">팀 소개 &amp; 기도제목</span>
     </div>
-    <div class="tile-wide" style="background:#6b7c93;margin-top:10px" onclick="show('extra','extra')">
+    <div class="tile-wide" style="background:#7c6fe8;margin-top:10px" onclick="show('extra','extra')">
       <span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M9 9h6M9 12h6M9 15h4"/></svg></span>
       <span class="tl">기타사항</span>
     </div>
@@ -512,6 +594,20 @@ a{{text-decoration:none;color:inherit}}
 <script>
 var DAY_COLOR = {{wed:'var(--wed)',thu:'var(--thu)',fri:'var(--fri)',sat:'var(--sat)'}};
 
+function toggleMealForm(){{
+  var wrap = document.getElementById('myform-wrap');
+  var ifr = document.getElementById('myform-iframe');
+  if(!wrap) return;
+  var opening = wrap.style.display === 'none';
+  if(opening){{
+    if(!ifr.src) ifr.src = {MEAL_FORM_EMBED_URL!r};
+    wrap.style.display = 'block';
+    setTimeout(function(){{ wrap.scrollIntoView({{behavior:'smooth', block:'start'}}); }}, 50);
+  }} else {{
+    wrap.style.display = 'none';
+  }}
+}}
+
 function defaultTab(p){{
   if(p==='home') return 'cal';
   if(p==='team') return 'people';
@@ -528,16 +624,13 @@ function show(page, tab){{
     el.classList.toggle('active', el.dataset.tab===t);
   }});
 
-  // 요일 탭 활성화
-  ['wed','thu','fri','sat'].forEach(function(d){{
-    var el = document.getElementById('dtab-'+d);
-    if(el) el.classList.toggle('active', d===page);
-  }});
-
-  // 요일 탭바 색상 동적 적용
+  // 현재 페이지의 요일 탭바만 활성화 · 색상 적용 (섹션마다 탭바가 각각 있음)
   var daytabBar = document.querySelector('#page-'+page+' .daytab-bar');
-  if(daytabBar && DAY_COLOR[page]){{
-    daytabBar.style.setProperty('--c', DAY_COLOR[page]);
+  if(daytabBar){{
+    daytabBar.querySelectorAll('.daytab').forEach(function(el){{
+      el.classList.toggle('active', el.dataset.day===page);
+    }});
+    if(DAY_COLOR[page]) daytabBar.style.setProperty('--c', DAY_COLOR[page]);
   }}
 
   window.scrollTo(0,0);
