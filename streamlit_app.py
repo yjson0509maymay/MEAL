@@ -82,11 +82,12 @@ def load_all_data():
                 category = row.get("요일/분류", "").strip()
                 content  = row.get("메뉴/내용", "").strip() or row.get("식사종류", "").strip()
                 note     = row.get("메모/비고", "").strip()
+                owner    = row.get("담당자", "").strip()
                 if not category or not content:
                     continue
                 if category not in extra_data:
                     extra_data[category] = []
-                extra_data[category].append((content, note))
+                extra_data[category].append((content, note, owner))
 
         meal_data = meal_data if meal_data else get_default_data()
         meal_data = apply_form_responses(meal_data)
@@ -121,24 +122,24 @@ def apply_form_responses(meal_data):
 def get_default_extra():
     return {
         "아침 공통 메뉴": [
-            ("바나나 · 삶은계란 · 시리얼 · 우유 · 식빵 · 잼 · 컵라면", ""),
-            ("커피 알아보기 (철수 형)", "확인완료"),
+            ("바나나 · 삶은계란 · 시리얼 · 우유 · 식빵 · 잼 · 컵라면", "", ""),
+            ("커피", "확인완료", "철수"),
         ],
-        "상시 반찬": [("김치 · 단무지 · 김", "")],
+        "상시 반찬": [("김치 · 단무지 · 김", "", "")],
         "상시 간식": [
-            ("초콜릿 · 비타민젤리 · 말랑카우 · 마이쮸 · 자유시간", "상시구비품"),
-            ("타먹는 커피 · 디카페인 · 얼음", "상시구비품"),
+            ("초콜릿 · 비타민젤리 · 말랑카우 · 마이쮸 · 자유시간", "상시구비품", ""),
+            ("타먹는 커피 · 디카페인 · 얼음", "상시구비품", ""),
         ],
-        "밥 담당": [("오재화 — 수요일 체크", "담당")],
+        "밥 담당": [("수요일 체크", "", "오재화")],
         "준비물": [
-            ("온수통", "우리들교회 대여가능"),
-            ("아이스박스", "우리들교회 대여가능 / 통영에서도 준비"),
-            ("들통", "준비됨"),
-            ("버너", "준비됨"),
-            ("요리기구", "숙소에서 챙겨가면 됨"),
-            ("웍", "찾아보시는 중"),
-            ("냄비 · 도마 · 볼", "숙소에서 챙겨가면 됨"),
-            ("밥솥 — 숙소 2개 + 교회 1개 (10인용 2개 / 20인용 1개)", "숙소"),
+            ("온수통", "우리들교회 대여가능", ""),
+            ("아이스박스", "우리들교회 대여가능 / 통영에서도 준비", ""),
+            ("들통", "준비됨", ""),
+            ("버너", "준비됨", ""),
+            ("요리기구", "숙소에서 챙겨가면 됨", ""),
+            ("웍", "찾아보시는 중", ""),
+            ("냄비 · 도마 · 볼", "숙소에서 챙겨가면 됨", ""),
+            ("밥솥 — 숙소 2개 + 교회 1개 (10인용 2개 / 20인용 1개)", "숙소", ""),
         ],
     }
 
@@ -254,9 +255,11 @@ def build_extra_section(extra_data):
             continue
         items = extra_data[category]
         rows = ""
-        for content, note in items:
-            tag = f'<span class="info-tag">{esc(note)}</span>' if note else ""
-            rows += f"<li>{tag}{esc(content)}</li>"
+        for content, note, owner in items:
+            tags = f'<span class="info-tag">{esc(note)}</span>' if note else ""
+            if owner:
+                tags += f'<span class="info-tag" style="background:var(--primary);color:#fff">담당 · {esc(owner)}</span>'
+            rows += f"<li>{tags}{esc(content)}</li>"
         sections_html += f"""
     <div class="info-section">
       <h3>{esc(category)}</h3>
