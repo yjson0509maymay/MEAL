@@ -493,6 +493,12 @@ a{{text-decoration:none;color:inherit}}
 <section id="page-home" class="page-sec">
   <div class="page">
     <div class="hero"><img src="{poster}" alt="2026 통영 아웃리치 포스터"></div>
+
+    <div class="tile-wide" onclick="show('team','people')">
+      <span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="8.5" r="2.4"/><path d="M16 14.2A4.6 4.6 0 0 1 20.5 19"/></svg></span>
+      <span class="tl">팀 소개 &amp; 기도제목</span>
+    </div>
+
     <div class="welcome"><b>식사팀 가이드</b>요일을 눌러 그날의 식단을 확인하세요.</div>
 
     <!-- 수목금토 한 줄 -->
@@ -522,11 +528,6 @@ a{{text-decoration:none;color:inherit}}
         <span class="dl">기타</span>
         <span class="ds">안내사항</span>
       </div>
-    </div>
-
-    <div class="tile-wide" onclick="show('team','people')">
-      <span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="8.5" r="2.4"/><path d="M16 14.2A4.6 4.6 0 0 1 20.5 19"/></svg></span>
-      <span class="tl">팀 소개 &amp; 기도제목</span>
     </div>
 
     {sheet_btn}
