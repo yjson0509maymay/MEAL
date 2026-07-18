@@ -309,7 +309,8 @@ def build_html(meal_data, sheet_url, extra_data=None):
       내 담당 끼니 입력하기
     </div>
     <div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5">
-      같은 요일·끼니로 다시 제출하면 이전 내용을 덮어써요 — 수정할 땐 전체 내용을 다시 적어주세요
+      같은 요일·끼니로 다시 제출하면 이전 내용을 덮어써요 — 수정할 땐 전체 내용을 다시 적어주세요<br>
+      제출 후엔 하단 <b>"식단"</b> 탭에서 해당 요일을 눌러 확인하세요 (반영까지 최대 1분 걸려요)
     </div>
     <div id="myform-wrap" style="display:none;margin-top:14px;text-align:left">
       <iframe id="myform-iframe" style="width:100%;height:820px;border:none;border-radius:16px;
