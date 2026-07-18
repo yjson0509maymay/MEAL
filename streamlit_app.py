@@ -324,6 +324,9 @@ def build_html(meal_data, sheet_url, extra_data=None):
 
     sheet_btn = f"""
 <div style="text-align:center;padding:14px 20px 0">
+  {my_meal_btn}
+</div>
+<div style="text-align:center;padding:10px 20px 0">
   <a href="{sheet_url}" target="_blank"
      style="display:inline-flex;align-items:center;gap:8px;background:#4e6448;color:#fff;
             border-radius:999px;padding:11px 20px;font-size:13px;font-weight:700;
@@ -333,12 +336,9 @@ def build_html(meal_data, sheet_url, extra_data=None):
       <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
       <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
     </svg>
-    메뉴 전체 수정 (구글 시트)
+    팀장 전용 · 메뉴 전체 수정 (구글 시트)
   </a>
   <div style="font-size:11px;color:#7d8278;margin-top:6px">수정 후 1분 이내 자동 반영</div>
-</div>
-<div style="text-align:center;padding:10px 20px 0">
-  {my_meal_btn}
 </div>
 <div style="text-align:center;padding:20px 20px 4px">
   <div style="display:inline-block;background:#fff;border-radius:16px;padding:16px;
