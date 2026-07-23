@@ -388,11 +388,13 @@ def build_html(meal_data, sheet_url, extra_data=None):
 <div style="text-align:center;padding:20px 20px 4px">
   <div style="display:inline-block;background:#fff;border-radius:16px;padding:16px;
               box-shadow:0 4px 20px rgba(27,28,28,.07);border:1px solid var(--line)">
-    <img
-      src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=6&data=https://ttmeal.streamlit.app"
-      alt="앱 QR코드"
-      style="width:160px;height:160px;display:block;border-radius:6px"
-    >
+    <a href="https://ttmeal.streamlit.app" target="_blank" style="display:block;text-decoration:none;-webkit-tap-highlight-color:transparent;cursor:pointer">
+      <img
+        src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=6&data=https://ttmeal.streamlit.app"
+        alt="앱 QR코드"
+        style="width:160px;height:160px;display:block;border-radius:6px;margin:0 auto"
+      >
+    </a>
     <div style="margin-top:10px;font-size:13px;font-weight:800;color:var(--ink);
                 display:flex;align-items:center;justify-content:center;gap:5px">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)"
@@ -547,11 +549,13 @@ a{{text-decoration:none;color:inherit}}
     <div style="text-align:center;padding:14px 20px 4px">
       <div style="display:inline-block;background:#fff;border-radius:16px;padding:16px;
                   box-shadow:0 4px 20px rgba(27,28,28,.07);border:1px solid var(--line)">
-        <img
-          src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=6&data={drink_form_url}"
-          alt="{drink_label} {drink_meal_time} 커피 주문 폼 QR코드"
-          style="width:160px;height:160px;display:block;border-radius:6px"
-        >
+        <a href="{drink_form_url}" target="_blank" style="display:block;text-decoration:none;-webkit-tap-highlight-color:transparent;cursor:pointer">
+          <img
+            src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=6&data={drink_form_url}"
+            alt="{drink_label} {drink_meal_time} 커피 주문 폼 QR코드"
+            style="width:160px;height:160px;display:block;border-radius:6px;margin:0 auto"
+          >
+        </a>
         <div style="margin-top:10px;font-size:13px;font-weight:800;color:var(--ink);
                     display:flex;align-items:center;justify-content:center;gap:5px">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)"
