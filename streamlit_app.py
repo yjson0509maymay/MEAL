@@ -318,38 +318,35 @@ def build_html(meal_data, sheet_url, extra_data=None):
     data_sheet_url = f"https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}/edit"
 
     sheet_btn = f"""
-<div style="display:flex;justify-content:center;gap:8px;padding:14px 20px 0;flex-wrap:wrap">
-  <a href="{sheet_url}" target="_blank"
-     style="display:inline-flex;align-items:center;white-space:nowrap;gap:6px;background:#4e6448;color:#fff;
-            border-radius:999px;padding:10px 16px;font-size:13px;font-weight:700;
-            text-decoration:none;box-shadow:0 4px 14px rgba(78,100,72,.3)">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-         stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-    </svg>
-    팀장 전용 시트 열기
-  </a>
-  <a href="{data_sheet_url}" target="_blank"
-     style="display:inline-flex;align-items:center;white-space:nowrap;gap:6px;background:#fff;color:var(--ink-soft);
-            border:1.5px solid var(--line);border-radius:999px;padding:10px 16px;font-size:13px;font-weight:700;
-            text-decoration:none;-webkit-tap-highlight-color:transparent">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-         stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
-    </svg>
-    앱 데이터 시트 보기 (읽기전용)
-  </a>
-</div>
-<div style="text-align:center;padding:10px 20px 0">
-  <div style="display:inline-flex;align-items:center;gap:6px;background:#fff3d6;border:1px solid #e8c468;
-              border-radius:999px;padding:8px 14px;font-size:11.5px;font-weight:700;color:#8a6416">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8a6416"
-         stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none">
-      <path d="M12 9v4"/><path d="M12 17h.01"/>
-      <path d="M10.3 3.9 2.5 17a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/>
-    </svg>
-    이 시트를 수정해도 앱 내용은 자동으로 반영되지 않아요
+<div style="display:flex;gap:10px;padding:14px 20px 0">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+    <a href="{sheet_url}" target="_blank"
+       style="display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;gap:6px;
+              background:#4e6448;color:#fff;border-radius:999px;padding:9px 14px;font-size:12.5px;font-weight:700;
+              text-decoration:none;box-shadow:0 4px 14px rgba(78,100,72,.3);width:100%">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none">
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+      </svg>
+      식사팀 시트
+    </a>
+    <div style="font-size:10.5px;color:#8a6416;text-align:center;line-height:1.4">수정해도 앱엔<br>반영 안 돼요</div>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+    <a href="{data_sheet_url}" target="_blank"
+       style="display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;gap:6px;
+              background:#fff;color:var(--ink-soft);border:1.5px solid var(--line);border-radius:999px;
+              padding:9px 14px;font-size:12.5px;font-weight:700;text-decoration:none;
+              -webkit-tap-highlight-color:transparent;width:100%">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none">
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+      </svg>
+      앱 데이터 시트 수정
+    </a>
+    <div style="font-size:10.5px;color:#4e6448;text-align:center;line-height:1.4">수정 후 최대 1분 내<br>자동 반영돼요</div>
   </div>
 </div>
 <div style="text-align:center;padding:20px 20px 4px">
