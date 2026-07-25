@@ -40,13 +40,8 @@ CSV_URL = (
     f"/gviz/tq?tqx=out:csv&sheet={SHEET_NAME}"
 )
 
-# 담당자 · 준비재료 입력용 구글폼 링크 (폼 생성 후 이 값만 채우면 자동으로 버튼이 활성화됨)
-MEAL_FORM_EMBED_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdJaiAH29MG_AihiZfKYuvJBBto4CxnPf0KOw7Gh5NMThC11g/viewform?embedded=true"
-# 폼 응답이 쌓이는 스프레드시트 (담당자·준비재료를 요일 카드에 자동으로 합쳐 보여줄 때 사용)
-FORM_RESPONSE_SHEET_ID = "1acelubO2of-IFVZOahqnbZp6p4Lfd2p8OIf4ECTMdGo"
-FORM_RESPONSE_CSV_URL = (
-    f"https://docs.google.com/spreadsheets/d/{FORM_RESPONSE_SHEET_ID}/gviz/tq?tqx=out:csv"
-)
+# 팀장 전용 작업 시트 (앱 데이터와는 별개 — 수정해도 앱에 자동 반영되지 않음)
+TEAM_LEADER_SHEET_ID = "1GkvF5xchfYbH1yQ015_zEdmd5O7YDdCa"
 
 # 아침 커피 주문 폼 (요일마다 별도 폼, 이름 + 음료 선택, 담당: 철수)
 KST = timezone(timedelta(hours=9))
@@ -124,45 +119,27 @@ def load_all_data():
                 extra_data[category].append((content, note, owner))
 
         meal_data = meal_data if meal_data else get_default_data()
-        meal_data = apply_form_responses(meal_data)
         return (
             meal_data,
             extra_data if extra_data else get_default_extra(),
         )
     except Exception:
-        return apply_form_responses(get_default_data()), get_default_extra()
-
-def apply_form_responses(meal_data):
-    """구글폼 응답(담당자·준비재료)을 해당 요일·끼니 카드에 합쳐 넣습니다."""
-    try:
-        req = urllib.request.Request(FORM_RESPONSE_CSV_URL, headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(req, timeout=8) as resp:
-            raw = resp.read().decode("utf-8")
-        reader = csv.DictReader(io.StringIO(raw))
-        for row in reader:
-            day       = row.get("요일", "").strip()
-            meal_type = row.get("식사종류", "").strip()
-            owner     = row.get("담당자 이름", "").strip()
-            ingredients = row.get("준비재료 및 수량", "").strip()
-            if day in meal_data and meal_type in meal_data[day]:
-                if owner:
-                    meal_data[day][meal_type]["owner"] = owner
-                if ingredients:
-                    meal_data[day][meal_type]["ingredients"] = ingredients
-    except Exception:
-        pass
-    return meal_data
+        return get_default_data(), get_default_extra()
 
 def get_default_extra():
     return {
         "아침 공통 메뉴": [
-            ("바나나 · 삶은계란 · 시리얼 · 우유 · 식빵 · 잼 · 컵라면", "", ""),
-            ("커피", "확인완료", "철수"),
+            ("바나나 · 삶은계란 · 시리얼 · 우유 · 식빵 · 잼 · 컵라면 (목/금/토 3일 공용)", "", ""),
+            ("배달커피 (아침 대체) 15잔 · 3일", "", "철수"),
         ],
-        "상시 반찬": [("김치 · 단무지 · 김", "", "")],
+        "공용 식재료": [
+            ("쌀 10kg, 김치 5kg, 단무지 2팩, 김 30봉, 계란 30구, 파 2단, 양파 2kg, 다진마늘 500g, "
+             "후추 1통, 참기름 1병, 볶음참깨 200g, 간장 1병, 고추장 1통, 고춧가루 1봉, 육수용코인 1통",
+             "", ""),
+        ],
         "상시 간식": [
-            ("초콜릿 · 비타민젤리 · 말랑카우 · 마이쮸 · 자유시간", "상시구비품", ""),
-            ("타먹는 커피 · 디카페인 · 얼음", "상시구비품", ""),
+            ("초콜릿 · 비타민젤리 · 말랑카우 · 마이쭈 · 자유시간 · 사탕", "상시구비품", ""),
+            ("믹스커피 100개입 · 블랙커피 100개입", "상시구비품", ""),
         ],
         "밥 담당": [("수요일 체크", "", "오재화")],
         "준비물": [
@@ -174,32 +151,42 @@ def get_default_extra():
             ("웍", "찾아보시는 중", ""),
             ("냄비 · 도마 · 볼", "숙소에서 챙겨가면 됨", ""),
             ("밥솥 — 숙소 2개 + 교회 1개 (10인용 2개 / 20인용 1개)", "숙소", ""),
+            ("종이컵 100개 · 요리용 장갑 · 포크", "", ""),
         ],
     }
 
 def get_default_data():
     return {
         "수요일": {
-            "저녁": {"dish": "떡만두국", "memo": "간단한거", "time": "18:00", "owner": "현호",
-                     "ingredients": "만두 00봉지, 떡국떡 00봉지, 파 00단, 사골육수 00g봉지, 후추"},
-            "야식": {"dish": "수박 · 방울토마토 등 과일 · 과자", "memo": "간단한거", "time": "", "owner": "", "ingredients": ""},
+            "저녁": {"dish": "떡만두국", "memo": "간단한거 (30인분)", "time": "18:00", "owner": "현호",
+                     "ingredients": "떡 4kg, 만두 3kg, 계란 15개, 파 2단, 육수팩 1봉"},
+            "야식": {"dish": "수박 · 방울토마토 · 과자", "memo": "간단다과", "time": "", "owner": "",
+                     "ingredients": "수박 4통, 방울토마토 3통, 과자 15개, 군것질거리"},
         },
         "목요일": {
-            "아침": {"dish": "조식 & 새벽 큐티", "memo": "바나나·삶은계란·시리얼·우유·식빵·잼·컵라면", "time": "07:00", "owner": "", "ingredients": ""},
-            "점심": {"dish": "소불고기 덮밥 + 오이냉국", "memo": "든든한거(육류)", "time": "", "owner": "설희", "ingredients": ""},
-            "간식": {"dish": "화채 + 아이스크림", "memo": "시원한거", "time": "14:00–16:00", "owner": "", "ingredients": ""},
-            "저녁": {"dish": "보쌈 + 빔국수 + 쌈", "memo": "든든한거+시원한거", "time": "", "owner": "재화형님", "ingredients": ""},
-            "야식": {"dish": "떡볶이 세트", "memo": "직접 만들기", "time": "", "owner": "미정", "ingredients": ""},
+            "아침": {"dish": "조식 & 새벽 큐티", "memo": "바나나·삶은계란·시리얼·우유·식빵·잼·컵라면 (목/금/토 3일 공용)", "time": "07:00",
+                     "owner": "", "ingredients": ""},
+            "점심": {"dish": "닭갈비덮밥 + 미소된장국", "memo": "든든한거(육류) (30인분)", "time": "", "owner": "설희",
+                     "ingredients": "닭다리살정육 6kg, 양파 2kg, 냉동고구마 2kg, 대파 1kg, 깻잎 5묶음, 세척당근 3kg, 닭갈비소스 2kg, 소불고기양념 500g, 다진마늘 200g, 후추 2큰술, 카레가루 3큰술, 참기름 500ml, 볶음참깨 100g, 미소된장국 24인분"},
+            "간식": {"dish": "수박화채 + 아이스크림", "memo": "시원한거", "time": "14:00–16:00", "owner": "",
+                     "ingredients": "화채용수박 3통, 밀키스/사이다 3개, 얼음, 후르츠칵테일 2통, 아이스크림 30개, 황도 3통"},
+            "저녁": {"dish": "보쌈 + 비빔면 + 쌈", "memo": "든든한거+시원한거 (35인분)", "time": "", "owner": "재화형님",
+                     "ingredients": "돼지고기 9kg, 쌈무, 씸장, 새우젓, 양파(수육용) 1kg, 사과(수육용) 3개, 생강(수육용) 200g, 마늘(수육용) 500g, 파(수육용) 1단, 막국수면 9개, 비빔고추장, 메밀소바장국"},
+            "야식": {"dish": "떡볶이 세트", "memo": "직접 만들기", "time": "", "owner": "미정",
+                     "ingredients": "떡볶이떡 1.5kg, 고춧가루(집에서 가져감), 청정원 순창 1kg, 대파 1kg, 오뎅 10장, 비비고 김말이 500g, 꼬치어묵"},
         },
         "금요일": {
-            "아침": {"dish": "조식 & 새벽 큐티", "memo": "전날 저녁 방으로 미리 배달", "time": "07:00", "owner": "", "ingredients": ""},
+            "아침": {"dish": "조식 & 새벽 큐티", "memo": "전날 저녁 방으로 미리 배달 (목/금/토 3일 공용)", "time": "07:00",
+                     "owner": "", "ingredients": ""},
             "오전": {"dish": "노방전도", "memo": "공원 전체 행사 · 다과 지참", "time": "", "owner": "", "ingredients": ""},
-            "점심": {"dish": "가정식 백반 (계란말이+김치찌개+제육볶음+기타반찬)", "memo": "백반", "time": "", "owner": "현호", "ingredients": ""},
-            "저녁": {"dish": "외식 (식당)", "memo": "외식 및 카페", "time": "", "owner": "", "ingredients": ""},
+            "점심": {"dish": "가정식 백반", "memo": "김치찌개+계란말이+제육볶음+기타반찬 (30인분)", "time": "", "owner": "현호",
+                     "ingredients": "제육용 고기 6kg, 찌개용 고기 2kg, 김치 5kg, 두부 3모, 계란 30개, 제육양념 1통"},
+            "저녁": {"dish": "외식 (식당)", "memo": "외식 및 카페 (개인 부담)", "time": "", "owner": "", "ingredients": ""},
         },
         "토요일": {
-            "아침": {"dish": "조식 & 새벽 큐티", "memo": "숙소 비품 및 잔여 식자재 활용", "time": "07:00", "owner": "", "ingredients": ""},
-            "점심": {"dish": "외식 (식당)", "memo": "장소·메뉴 선정 · 식사 후 행사 마무리", "time": "", "owner": "", "ingredients": ""},
+            "아침": {"dish": "조식 & 새벽 큐티", "memo": "숙소 비품 및 잔여 식자재 활용 (목/금/토 3일 공용)", "time": "07:00",
+                     "owner": "", "ingredients": ""},
+            "점심": {"dish": "외식 (식당)", "memo": "장소·메뉴 선정 · 식사 후 행사 마무리 (개인 부담)", "time": "", "owner": "", "ingredients": ""},
         },
     }
 
@@ -280,7 +267,7 @@ def build_day_section(day_id, day_label, subtitle, color_var, meals):
 # ─────────────────────── 메인 HTML 빌드 ───────────────────────
 def build_extra_section(extra_data):
     """기타사항 섹션 HTML을 동적으로 생성합니다."""
-    CATEGORY_ORDER = ["아침 공통 메뉴", "상시 반찬", "상시 간식", "밥 담당", "준비물"]
+    CATEGORY_ORDER = ["아침 공통 메뉴", "공용 식재료", "상시 간식", "밥 담당", "준비물"]
     all_categories = CATEGORY_ORDER + [c for c in extra_data if c not in CATEGORY_ORDER]
 
     sections_html = ""
@@ -328,62 +315,42 @@ def build_html(meal_data, sheet_url, extra_data=None):
     fri_html = build_day_section("fri", "금요일", "일정을 확인하고 은혜로운 하루 보내세요.", "--fri", meal_data.get("금요일", {}))
     sat_html = build_day_section("sat", "토요일", "잘 마무리하고 평안히 돌아가요.",        "--sat", meal_data.get("토요일", {}))
 
-    if MEAL_FORM_EMBED_URL:
-        form_response_url = f"https://docs.google.com/spreadsheets/d/{FORM_RESPONSE_SHEET_ID}/edit"
-        my_meal_btn = f'''<div style="display:flex;justify-content:center;gap:8px">
-      <div onclick="toggleMealForm()"
-       style="display:inline-flex;align-items:center;white-space:nowrap;
-              gap:6px;background:#fff;color:var(--primary);
-              border:1.5px solid var(--primary);border-radius:999px;padding:10px 16px;font-size:13px;
-              font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none">
-          <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
-        </svg>
-        내 담당 끼니 입력하기
-      </div>
-      <a href="{form_response_url}" target="_blank"
-         style="display:inline-flex;align-items:center;white-space:nowrap;
-                gap:6px;background:#fff;color:var(--ink-soft);
-                border:1.5px solid var(--line);border-radius:999px;padding:10px 14px;font-size:13px;
-                font-weight:700;text-decoration:none;-webkit-tap-highlight-color:transparent">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none">
-          <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
-        </svg>
-        제출 현황 보기
-      </a>
-    </div>
-    <div style="text-align:center;font-size:11px;color:#7d8278;margin-top:8px">
-      마지막 제출이 최종본이 돼요 — 부분만 적지 말고 재료 전체를 다시 적어주세요.
-    </div>
-    <div id="myform-wrap" style="display:none;margin-top:14px;text-align:left">
-      <iframe id="myform-iframe" style="width:100%;height:820px;border:none;border-radius:16px;
-              box-shadow:0 4px 20px rgba(27,28,28,.07)" loading="lazy"></iframe>
-    </div>'''
-    else:
-        my_meal_btn = '''<div style="display:inline-block;background:var(--card-low);color:var(--muted);
-         border-radius:999px;padding:10px 20px;font-size:12.5px;font-weight:700">
-      내 담당 끼니 입력 폼 준비 중
-    </div>'''
+    data_sheet_url = f"https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}/edit"
 
     sheet_btn = f"""
-<div style="text-align:center;padding:14px 20px 0">
-  {my_meal_btn}
-</div>
-<div style="text-align:center;padding:10px 20px 0">
+<div style="display:flex;justify-content:center;gap:8px;padding:14px 20px 0;flex-wrap:wrap">
   <a href="{sheet_url}" target="_blank"
-     style="display:inline-flex;align-items:center;gap:8px;background:#4e6448;color:#fff;
-            border-radius:999px;padding:11px 20px;font-size:13px;font-weight:700;
+     style="display:inline-flex;align-items:center;white-space:nowrap;gap:6px;background:#4e6448;color:#fff;
+            border-radius:999px;padding:10px 16px;font-size:13px;font-weight:700;
             text-decoration:none;box-shadow:0 4px 14px rgba(78,100,72,.3)">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
          stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
       <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
     </svg>
-    팀장 전용 · 메뉴 전체 수정 (구글 시트)
+    팀장 전용 시트 열기
   </a>
-  <div style="font-size:11px;color:#7d8278;margin-top:6px">수정 후 1분 이내 자동 반영</div>
+  <a href="{data_sheet_url}" target="_blank"
+     style="display:inline-flex;align-items:center;white-space:nowrap;gap:6px;background:#fff;color:var(--ink-soft);
+            border:1.5px solid var(--line);border-radius:999px;padding:10px 16px;font-size:13px;font-weight:700;
+            text-decoration:none;-webkit-tap-highlight-color:transparent">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>
+    </svg>
+    앱 데이터 시트 보기 (읽기전용)
+  </a>
+</div>
+<div style="text-align:center;padding:10px 20px 0">
+  <div style="display:inline-flex;align-items:center;gap:6px;background:#fff3d6;border:1px solid #e8c468;
+              border-radius:999px;padding:8px 14px;font-size:11.5px;font-weight:700;color:#8a6416">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8a6416"
+         stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none">
+      <path d="M12 9v4"/><path d="M12 17h.01"/>
+      <path d="M10.3 3.9 2.5 17a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/>
+    </svg>
+    이 시트를 수정해도 앱 내용은 자동으로 반영되지 않아요
+  </div>
 </div>
 <div style="text-align:center;padding:20px 20px 4px">
   <div style="display:inline-block;background:#fff;border-radius:16px;padding:16px;
@@ -537,6 +504,30 @@ a{{text-decoration:none;color:inherit}}
 <!-- ══ 홈 ══ -->
 <section id="page-home" class="page-sec">
   <div class="page">
+    <!-- 수목금토 한 줄 -->
+    <div class="day-row">
+      <div class="day-tile" style="--c:var(--wed)" onclick="show('wed','meal')">
+        <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 10h14v6a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3z"/><path d="M3 10h18M8 10V8.5M16 10V8.5M9.5 5.5c.6-1 2.4-1 3 0M12.5 4c.6-1 2.4-1 3 0"/></svg></span>
+        <span class="dl">수</span>
+      </div>
+      <div class="day-tile" style="--c:var(--thu)" onclick="show('thu','meal')">
+        <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/></svg></span>
+        <span class="dl">목</span>
+      </div>
+      <div class="day-tile" style="--c:var(--fri)" onclick="show('fri','meal')">
+        <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4.5" r="1.8"/><path d="M11 8.5 9 13l2.5 1.5L13 21M13 11l3 1.5M9 13l-2 5M13 11l-1-2.5"/></svg></span>
+        <span class="dl">금</span>
+      </div>
+      <div class="day-tile" style="--c:var(--sat)" onclick="show('sat','meal')">
+        <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16l-1 11H5z"/><path d="M4 9 5.5 4h13L20 9M9 9V4.5M15 9V4.5"/></svg></span>
+        <span class="dl">토</span>
+      </div>
+      <div class="day-tile" style="--c:#7c6fe8" onclick="show('extra','extra')">
+        <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M9 9h6M9 12h6M9 15h4"/></svg></span>
+        <span class="dl">기타</span>
+      </div>
+    </div>
+
     <div class="hero"><img src="{poster}" alt="2026 통영 아웃리치 포스터"></div>
 
     <div class="tile-wide" onclick="show('team','people')">
@@ -580,30 +571,6 @@ a{{text-decoration:none;color:inherit}}
     </div>
 
     <div class="welcome"><b>식사팀 가이드</b>요일을 눌러 그날의 식단을 확인하세요.</div>
-
-    <!-- 수목금토 한 줄 -->
-    <div class="day-row">
-      <div class="day-tile" style="--c:var(--wed)" onclick="show('wed','meal')">
-        <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 10h14v6a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3z"/><path d="M3 10h18M8 10V8.5M16 10V8.5M9.5 5.5c.6-1 2.4-1 3 0M12.5 4c.6-1 2.4-1 3 0"/></svg></span>
-        <span class="dl">수</span>
-      </div>
-      <div class="day-tile" style="--c:var(--thu)" onclick="show('thu','meal')">
-        <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/></svg></span>
-        <span class="dl">목</span>
-      </div>
-      <div class="day-tile" style="--c:var(--fri)" onclick="show('fri','meal')">
-        <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4.5" r="1.8"/><path d="M11 8.5 9 13l2.5 1.5L13 21M13 11l3 1.5M9 13l-2 5M13 11l-1-2.5"/></svg></span>
-        <span class="dl">금</span>
-      </div>
-      <div class="day-tile" style="--c:var(--sat)" onclick="show('sat','meal')">
-        <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16l-1 11H5z"/><path d="M4 9 5.5 4h13L20 9M9 9V4.5M15 9V4.5"/></svg></span>
-        <span class="dl">토</span>
-      </div>
-      <div class="day-tile" style="--c:#7c6fe8" onclick="show('extra','extra')">
-        <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M9 9h6M9 12h6M9 15h4"/></svg></span>
-        <span class="dl">기타</span>
-      </div>
-    </div>
 
     {sheet_btn}
     <div class="foot">통영 물댄동산교회 위드공동체 · 2026 여름 아웃리치</div>
@@ -672,20 +639,6 @@ a{{text-decoration:none;color:inherit}}
 <script>
 var DAY_COLOR = {{wed:'var(--wed)',thu:'var(--thu)',fri:'var(--fri)',sat:'var(--sat)',extra:'#7c6fe8'}};
 
-function toggleMealForm(){{
-  var wrap = document.getElementById('myform-wrap');
-  var ifr = document.getElementById('myform-iframe');
-  if(!wrap) return;
-  var opening = wrap.style.display === 'none';
-  if(opening){{
-    if(!ifr.src) ifr.src = {MEAL_FORM_EMBED_URL!r};
-    wrap.style.display = 'block';
-    setTimeout(function(){{ wrap.scrollIntoView({{behavior:'smooth', block:'start'}}); }}, 50);
-  }} else {{
-    wrap.style.display = 'none';
-  }}
-}}
-
 function defaultTab(p){{
   if(p==='home') return 'cal';
   if(p==='team') return 'people';
@@ -720,7 +673,7 @@ show('home');
 # ─────────────────────── 메인 ───────────────────────
 def main():
     meal_data, extra_data = load_all_data()
-    sheet_url = f"https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}/edit"
+    sheet_url = f"https://docs.google.com/spreadsheets/d/{TEAM_LEADER_SHEET_ID}/edit"
     html = build_html(meal_data, sheet_url, extra_data)
     components.html(html, height=900, scrolling=True)
 
