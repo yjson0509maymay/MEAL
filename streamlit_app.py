@@ -415,6 +415,7 @@ def build_html(meal_data, sheet_url, extra_data=None):
     poster   = b64("assets/poster.png",   "image/png")
     team     = b64("assets/team.jpg",     "image/jpeg")
     schedule = b64("assets/schedule.png", "image/png")
+    logo     = b64("assets/logo.png",     "image/png")
 
     wed_html = build_day_section("wed", "수요일", "하루를 열며 차분히 시작해요.",          "--wed", meal_data.get("수요일", {}))
     thu_html = build_day_section("thu", "목요일", "메인 사역일 — 든든하게 채워요.",        "--thu", meal_data.get("목요일", {}))
@@ -501,7 +502,8 @@ a{{text-decoration:none;color:inherit}}
 .topbar{{display:flex;align-items:center;gap:8px;padding:16px 20px 14px;border-bottom:1px solid var(--line);background:var(--surface);position:sticky;top:0;z-index:20}}
 .topbar .hb{{width:34px;height:34px;color:var(--primary);flex:none;cursor:pointer}}
 .topbar .hb svg{{width:24px;height:24px}}
-.topbar h1{{flex:1;text-align:center;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:21px;color:var(--primary);letter-spacing:-.01em;margin-right:34px}}
+.topbar h1{{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:21px;color:var(--primary);letter-spacing:-.01em;margin-right:34px}}
+.app-logo{{width:24px;height:24px;display:block;flex:none}}
 
 .page{{padding:20px 20px 8px}}
 
@@ -653,7 +655,7 @@ a{{text-decoration:none;color:inherit}}
   <span class="hb" onclick="show('home')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/></svg>
   </span>
-  <h1>2026 Outreach</h1>
+  <h1><img class="app-logo" src="{logo}" alt="교회 로고">Think Trip</h1>
 </div>
 
 <!-- ══ 홈 ══ -->
