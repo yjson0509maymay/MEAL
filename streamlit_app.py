@@ -403,7 +403,12 @@ a{{text-decoration:none;color:inherit}}
 /* 홈 */
 .hero{{position:relative;border-radius:var(--r-xl);overflow:hidden;box-shadow:0 8px 30px rgba(78,100,72,.16);margin-bottom:10px}}
 .hero img{{display:block;width:100%}}
-#hero-poster{{cursor:zoom-in}}
+#hero-poster{{cursor:zoom-in;-webkit-user-drag:none;-webkit-touch-callout:none;
+  -webkit-tap-highlight-color:transparent;user-select:none}}
+.hero-hint{{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);
+  background:rgba(27,28,28,.62);color:#fff;font-size:11.5px;font-weight:700;
+  padding:6px 14px;border-radius:999px;display:flex;align-items:center;gap:5px;
+  cursor:pointer;-webkit-tap-highlight-color:transparent}}
 .sched-bar{{display:flex;align-items:center;justify-content:space-between;gap:8px;
   background:var(--primary);color:#fff;padding:10px 14px;font-size:12px;font-weight:800}}
 .sched-close{{background:rgba(255,255,255,.2);border-radius:999px;padding:4px 10px;
@@ -538,7 +543,11 @@ a{{text-decoration:none;color:inherit}}
     </div>
 
     <div class="hero">
-      <img id="hero-poster" src="{poster}" alt="2026 통영 아웃리치 포스터" onclick="showSchedule()">
+      <img id="hero-poster" src="{poster}" alt="2026 통영 아웃리치 포스터" onclick="showSchedule()" draggable="false">
+      <div class="hero-hint" onclick="showSchedule()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="2.5"/><path d="M4 9h16M9 3v3M15 3v3"/></svg>
+        눌러서 일정표 보기
+      </div>
       <div id="hero-schedule-wrap" style="display:none">
         <div class="sched-bar">
           <span>26년 통영 TT 최종 타임 테이블</span>
