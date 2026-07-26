@@ -135,7 +135,7 @@ def get_default_extra():
             ("초콜릿 · 비타민젤리 · 말랑카우 · 마이쭈 · 자유시간 · 사탕", "상시구비품", ""),
             ("믹스커피 100개입 · 블랙커피 100개입", "상시구비품", ""),
         ],
-        "밥 담당": [("수요일 체크", "", "오재화")],
+        "밥 담당": [("수요일 체크", "", "재화")],
         "준비물": [
             ("온수통", "우리들교회 대여가능", ""),
             ("아이스박스", "우리들교회 대여가능 / 통영에서도 준비", ""),
@@ -166,7 +166,7 @@ def get_default_data():
                      "ingredients": "화채용수박 3통, 밀키스/사이다 3개, 얼음, 후르츠칵테일 2통, 아이스크림 30개, 황도 3통"},
             "저녁": {"dish": "보쌈 + 비빔면 + 쌈", "memo": "든든한거+시원한거 (35인분)", "time": "", "owner": "재화형님",
                      "ingredients": "돼지고기 9kg, 쌈무, 씸장, 새우젓, 양파(수육용) 1kg, 사과(수육용) 3개, 생강(수육용) 200g, 마늘(수육용) 500g, 파(수육용) 1단, 막국수면 9개, 비빔고추장, 메밀소바장국"},
-            "야식": {"dish": "떡볶이 세트", "memo": "직접 만들기", "time": "", "owner": "미정",
+            "야식": {"dish": "떡볶이 세트", "memo": "직접 만들기", "time": "", "owner": "승현",
                      "ingredients": "떡볶이떡 1.5kg, 고춧가루(집에서 가져감), 청정원 순창 1kg, 대파 1kg, 오뎅 10장, 비비고 김말이 500g, 꼬치어묵"},
         },
         "금요일": {
@@ -308,7 +308,7 @@ def build_day_section(day_id, day_label, subtitle, color_var, meals):
         owner_val = info.get("owner", "").strip()
         owner_tag = (
             f'<div class="owner">담당 · {esc(owner_val)}</div>' if owner_val
-            else '<div class="owner owner-empty">담당 미정</div>'
+            else '<div class="owner owner-empty">담당 식사팀</div>'
         )
         ing_val = info.get("ingredients", "").strip()
         ingredients_block = (
