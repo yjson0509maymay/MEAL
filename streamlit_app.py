@@ -253,11 +253,11 @@ def esc(s):
 # ─────────────────────── 요일 탭 HTML (식단 내 이동) ───────────────────────
 DAY_TAB_HTML = """
 <div class="daytab-bar">
-  <span class="daytab" onclick="show('wed','meal')" data-day="wed">수</span>
-  <span class="daytab" onclick="show('thu','meal')" data-day="thu">목</span>
-  <span class="daytab" onclick="show('fri','meal')" data-day="fri">금</span>
-  <span class="daytab" onclick="show('sat','meal')" data-day="sat">토</span>
-  <span class="daytab" onclick="show('extra','extra')" data-day="extra">기타</span>
+  <span class="daytab" onclick="show('wed','meal')" data-day="wed"><span class="daytab-badge">수</span></span>
+  <span class="daytab" onclick="show('thu','meal')" data-day="thu"><span class="daytab-badge">목</span></span>
+  <span class="daytab" onclick="show('fri','meal')" data-day="fri"><span class="daytab-badge">금</span></span>
+  <span class="daytab" onclick="show('sat','meal')" data-day="sat"><span class="daytab-badge">토</span></span>
+  <span class="daytab" onclick="show('extra','extra')" data-day="extra"><span class="daytab-badge daytab-badge-sm">기타</span></span>
 </div>"""
 
 def build_day_section(day_id, day_label, subtitle, color_var, meals):
@@ -557,11 +557,18 @@ a{{text-decoration:none;color:inherit}}
 
 /* 요일 내 식단 탭 바 */
 .daytab-bar{{display:flex;background:#fff;border-bottom:1px solid var(--line);
-  position:sticky;top:57px;z-index:19;gap:0}}
-.daytab{{flex:1;text-align:center;padding:10px 0;font-size:15px;font-weight:800;
-  color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;
-  transition:color .15s,border-color .15s;-webkit-tap-highlight-color:transparent}}
-.daytab.active{{color:var(--c,var(--primary));border-bottom-color:var(--c,var(--primary))}}
+  position:sticky;top:57px;z-index:19;gap:0;padding:8px 4px}}
+.daytab{{flex:1;display:flex;align-items:center;justify-content:center;
+  padding:2px 0;cursor:pointer;-webkit-tap-highlight-color:transparent}}
+.daytab-badge{{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:13px;font-weight:800;color:var(--muted);
+  transition:background .15s,color .15s}}
+.daytab-badge-sm{{font-size:10.5px}}
+.daytab.active .daytab-badge{{color:var(--c,var(--primary));
+  background:radial-gradient(circle at 33% 28%,
+    color-mix(in srgb, var(--c,var(--primary)) 40%, #fff) 0%,
+    color-mix(in srgb, var(--c,var(--primary)) 20%, #fff) 55%,
+    color-mix(in srgb, var(--c,var(--primary)) 8%, #fff) 100%)}}
 
 /* 식단 카드 */
 .dayhead{{text-align:center;padding:16px 0 16px}}
