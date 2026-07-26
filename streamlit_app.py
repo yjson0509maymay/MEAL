@@ -544,7 +544,7 @@ a{{text-decoration:none;color:inherit}}
 
     <div class="hero">
       <img id="hero-poster" src="{poster}" alt="2026 통영 아웃리치 포스터" onclick="showSchedule()" draggable="false">
-      <div class="hero-hint" onclick="showSchedule()">
+      <div id="hero-hint" class="hero-hint" onclick="showSchedule()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="2.5"/><path d="M4 9h16M9 3v3M15 3v3"/></svg>
         눌러서 일정표 보기
       </div>
@@ -725,6 +725,7 @@ function schedDist(a,b){{
 
 function showSchedule(){{
   document.getElementById('hero-poster').style.display = 'none';
+  document.getElementById('hero-hint').style.display = 'none';
   document.getElementById('hero-schedule-wrap').style.display = 'block';
 }}
 function hideSchedule(){{
@@ -732,6 +733,7 @@ function hideSchedule(){{
   schedApply();
   document.getElementById('hero-schedule-wrap').style.display = 'none';
   document.getElementById('hero-poster').style.display = 'block';
+  document.getElementById('hero-hint').style.display = 'flex';
 }}
 
 function defaultTab(p){{
