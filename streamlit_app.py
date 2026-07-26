@@ -528,12 +528,10 @@ a{{text-decoration:none;color:inherit}}
 
 /* ── 홈: 수목금토+기타 한 줄 타일 ── */
 .day-row{{display:flex;gap:6px;margin-bottom:10px}}
-.day-tile{{flex:1;min-width:0;background:var(--card);border-radius:var(--r-lg);padding:8px 3px;
-  box-shadow:0 6px 18px rgba(27,28,28,.07);display:flex;flex-direction:column;
-  align-items:center;justify-content:center;border:1px solid var(--line);cursor:pointer;
-  transition:transform .12s;-webkit-tap-highlight-color:transparent}}
-.day-tile:active{{transform:scale(.95)}}
-.day-tile .di{{width:42px;height:42px;flex:none;
+.day-tile{{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;
+  padding:6px 2px;cursor:pointer;transition:transform .12s;-webkit-tap-highlight-color:transparent}}
+.day-tile:active{{transform:scale(.93)}}
+.day-tile .di{{width:52px;height:52px;flex:none;
   clip-path:path('M21,1.5 C29,0.5 41,4 41.5,16 C42,26 40,34 31,39 C22,44 9,42 4,33 C-1,24 1,11 9,5 C13,2.2 17,2 21,1.5 Z');
   background:radial-gradient(circle at 33% 28%,
     color-mix(in srgb, var(--c) 40%, #fff) 0%,
@@ -542,8 +540,8 @@ a{{text-decoration:none;color:inherit}}
   filter:drop-shadow(0 2px 3px color-mix(in srgb, var(--c) 20%, transparent));
   color:var(--c);
   display:flex;align-items:center;justify-content:center;
-  font-size:19px;font-weight:900}}
-.day-tile .di-sm{{font-size:12px}}
+  font-size:22px;font-weight:900}}
+.day-tile .di-sm{{font-size:14px}}
 
 /* 팀 타일 */
 .tile-wide{{width:100%;background:var(--primary);color:#fff;border-radius:999px;
