@@ -497,7 +497,10 @@ a{{text-decoration:none;color:inherit}}
 .topbar{{display:flex;align-items:center;gap:8px;padding:16px 20px 14px;border-bottom:1px solid var(--line);background:var(--surface);position:sticky;top:0;z-index:20}}
 .topbar .hb{{width:34px;height:34px;color:var(--primary);flex:none;cursor:pointer}}
 .topbar .hb svg{{width:24px;height:24px}}
-.topbar h1{{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:21px;color:var(--primary);letter-spacing:-.01em;margin-right:34px}}
+.topbar-title{{flex:1;margin-right:34px}}
+.topbar-eyebrow{{text-align:center;font-size:10px;font-weight:700;color:var(--muted);
+  letter-spacing:.06em;margin-bottom:1px}}
+.topbar h1{{display:flex;align-items:center;justify-content:center;gap:7px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:21px;color:var(--primary);letter-spacing:-.01em}}
 .app-logo{{width:24px;height:24px;display:block;flex:none}}
 
 .page{{padding:20px 20px 8px}}
@@ -651,7 +654,10 @@ a{{text-decoration:none;color:inherit}}
   <span class="hb" onclick="show('home')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/></svg>
   </span>
-  <h1><img class="app-logo" src="{logo}" alt="교회 로고">Think Trip</h1>
+  <div class="topbar-title">
+    <div class="topbar-eyebrow">2026 통영</div>
+    <h1><img class="app-logo" src="{logo}" alt="교회 로고">Think Trip</h1>
+  </div>
 </div>
 
 <!-- ══ 홈 ══ -->
