@@ -76,6 +76,12 @@ def get_today_drink_form():
     today_str = datetime.now(KST).strftime("%Y-%m-%d")
     return DRINK_FORMS.get(today_str, DRINK_FORMS["2026-07-29"])
 
+def find_drink_form(day_label):
+    for entry in DRINK_FORMS.values():
+        if entry["label"] == day_label:
+            return entry
+    return None
+
 # ─────────────────────── 데이터 로드 ───────────────────────
 @st.cache_data(ttl=60)
 def load_all_data():
@@ -223,6 +229,13 @@ DAY_TAB_HTML = """
 </div>"""
 
 def build_day_section(day_id, day_label, subtitle, color_var, meals):
+    drink = find_drink_form(day_label)
+    drink_badge = ""
+    if drink:
+        drink_badge = f"""<a class="drink-badge" href="{drink['form_url']}" target="_blank">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 9h2a2 2 0 0 1 0 4h-2"/></svg>
+      {drink['meal_time']} 음료
+    </a>"""
     cards = ""
     for mt in MEAL_ORDER:
         if mt not in meals:
@@ -258,7 +271,10 @@ def build_day_section(day_id, day_label, subtitle, color_var, meals):
     return f"""<section id="page-{day_id}" class="page-sec" style="--c:var({color_var})">
   {DAY_TAB_HTML}
   <div class="page">
-    <div class="dayhead"><div class="dt">{day_label}</div><div class="ds">{subtitle}</div></div>
+    <div class="dayhead">
+      <div class="dayhead-row"><div class="dt">{day_label}</div>{drink_badge}</div>
+      <div class="ds">{subtitle}</div>
+    </div>
     {cards}
     <div class="foot">통영 물댄동산교회 위드공동체 · 2026 여름 아웃리치</div>
   </div>
@@ -454,8 +470,12 @@ a{{text-decoration:none;color:inherit}}
 
 /* 식단 카드 */
 .dayhead{{text-align:center;padding:16px 0 16px}}
+.dayhead-row{{display:flex;align-items:center;justify-content:center;gap:8px}}
 .dayhead .dt{{font-size:36px;font-weight:900;color:var(--c);letter-spacing:-.02em}}
 .dayhead .ds{{font-size:14px;color:var(--muted);margin-top:4px}}
+.drink-badge{{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;
+  color:var(--c);background:var(--card-low);border:1px solid var(--line);border-radius:999px;
+  padding:4px 10px;text-decoration:none;white-space:nowrap;-webkit-tap-highlight-color:transparent}}
 .mcard{{background:var(--card);border-radius:var(--r-xl);padding:18px;margin-bottom:14px;border:1px solid var(--line);border-top:5px solid var(--c);box-shadow:0 6px 22px rgba(27,28,28,.06)}}
 .mhead{{display:flex;align-items:center;gap:9px;margin-bottom:11px}}
 .mhead .mi{{width:24px;height:24px;color:var(--c);flex:none}}
