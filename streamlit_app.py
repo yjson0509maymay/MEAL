@@ -284,8 +284,9 @@ def build_extra_section(extra_data):
 def build_html(meal_data, sheet_url, extra_data=None):
     if extra_data is None:
         extra_data = get_default_extra()
-    poster = b64("assets/poster.png", "image/png")
-    team   = b64("assets/team.jpg",   "image/jpeg")
+    poster   = b64("assets/poster.png",   "image/png")
+    team     = b64("assets/team.jpg",     "image/jpeg")
+    schedule = b64("assets/schedule.png", "image/png")
 
     wed_html = build_day_section("wed", "수요일", "하루를 열며 차분히 시작해요.",          "--wed", meal_data.get("수요일", {}))
     thu_html = build_day_section("thu", "목요일", "메인 사역일 — 든든하게 채워요.",        "--thu", meal_data.get("목요일", {}))
@@ -389,8 +390,17 @@ a{{text-decoration:none;color:inherit}}
 .page{{padding:20px 20px 8px}}
 
 /* 홈 */
-.hero{{border-radius:var(--r-xl);overflow:hidden;box-shadow:0 8px 30px rgba(78,100,72,.16);margin-bottom:10px}}
+.hero{{position:relative;border-radius:var(--r-xl);overflow:hidden;box-shadow:0 8px 30px rgba(78,100,72,.16);margin-bottom:10px}}
 .hero img{{display:block;width:100%}}
+#hero-poster{{cursor:zoom-in}}
+.sched-bar{{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  background:var(--primary);color:#fff;padding:10px 14px;font-size:12px;font-weight:800}}
+.sched-close{{background:rgba(255,255,255,.2);border-radius:999px;padding:4px 10px;
+  font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}}
+.sched-viewport{{position:relative;overflow:hidden;touch-action:none;background:#fff;aspect-ratio:788/722}}
+.sched-viewport img{{position:absolute;top:0;left:0;width:100%;transform-origin:0 0;
+  -webkit-user-select:none;user-select:none;-webkit-user-drag:none;pointer-events:none}}
+.sched-hint{{text-align:center;font-size:10.5px;color:var(--muted);padding:6px 0;background:#fff}}
 .welcome{{text-align:center;margin:14px 4px 16px;color:var(--ink-soft);font-size:15px;line-height:1.55}}
 .welcome b{{display:block;font-size:18px;color:var(--primary);font-weight:800;margin-bottom:4px}}
 
@@ -492,7 +502,19 @@ a{{text-decoration:none;color:inherit}}
 <!-- ══ 홈 ══ -->
 <section id="page-home" class="page-sec">
   <div class="page">
-    <div class="hero"><img src="{poster}" alt="2026 통영 아웃리치 포스터"></div>
+    <div class="hero">
+      <img id="hero-poster" src="{poster}" alt="2026 통영 아웃리치 포스터" onclick="showSchedule()">
+      <div id="hero-schedule-wrap" style="display:none">
+        <div class="sched-bar">
+          <span>26년 통영 TT 최종 타임 테이블</span>
+          <span class="sched-close" onclick="hideSchedule()">✕ 포스터로</span>
+        </div>
+        <div id="sched-viewport" class="sched-viewport">
+          <img id="sched-img" src="{schedule}" alt="26년 통영 TT 최종 타임 테이블">
+        </div>
+        <div class="sched-hint">두 손가락으로 확대·축소, 한 손가락으로 이동</div>
+      </div>
+    </div>
     <div class="welcome"><b>식사팀 가이드</b>요일을 눌러 그날의 식단을 확인하세요.</div>
 
     <!-- 수목금토 한 줄 -->
@@ -607,6 +629,69 @@ function toggleMealForm(){{
   }} else {{
     wrap.style.display = 'none';
   }}
+}}
+
+var schedState = {{scale:1, tx:0, ty:0}};
+
+function schedApply(){{
+  var img = document.getElementById('sched-img');
+  if(img) img.style.transform = 'translate('+schedState.tx+'px,'+schedState.ty+'px) scale('+schedState.scale+')';
+}}
+
+function schedDist(a,b){{
+  return Math.hypot(a.x-b.x, a.y-b.y);
+}}
+
+(function(){{
+  var vp = document.getElementById('sched-viewport');
+  if(!vp) return;
+  var startDist=0, startScale=1, dragging=false, lastX=0, lastY=0;
+
+  vp.addEventListener('touchstart', function(e){{
+    if(e.touches.length===2){{
+      dragging=false;
+      var a={{x:e.touches[0].clientX,y:e.touches[0].clientY}};
+      var b={{x:e.touches[1].clientX,y:e.touches[1].clientY}};
+      startDist = schedDist(a,b);
+      startScale = schedState.scale;
+    }} else if(e.touches.length===1){{
+      dragging=true;
+      lastX=e.touches[0].clientX; lastY=e.touches[0].clientY;
+    }}
+  }}, {{passive:true}});
+
+  vp.addEventListener('touchmove', function(e){{
+    if(e.touches.length===2){{
+      e.preventDefault();
+      var a={{x:e.touches[0].clientX,y:e.touches[0].clientY}};
+      var b={{x:e.touches[1].clientX,y:e.touches[1].clientY}};
+      var d = schedDist(a,b);
+      schedState.scale = Math.min(4, Math.max(1, startScale * (d/startDist)));
+      schedApply();
+    }} else if(e.touches.length===1 && dragging){{
+      e.preventDefault();
+      var dx = e.touches[0].clientX - lastX;
+      var dy = e.touches[0].clientY - lastY;
+      lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+      schedState.tx += dx; schedState.ty += dy;
+      schedApply();
+    }}
+  }}, {{passive:false}});
+
+  vp.addEventListener('touchend', function(e){{
+    if(e.touches.length===0) dragging=false;
+  }});
+}})();
+
+function showSchedule(){{
+  document.getElementById('hero-poster').style.display = 'none';
+  document.getElementById('hero-schedule-wrap').style.display = 'block';
+}}
+function hideSchedule(){{
+  schedState = {{scale:1, tx:0, ty:0}};
+  schedApply();
+  document.getElementById('hero-schedule-wrap').style.display = 'none';
+  document.getElementById('hero-poster').style.display = 'block';
 }}
 
 function defaultTab(p){{
