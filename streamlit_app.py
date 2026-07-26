@@ -528,10 +528,13 @@ a{{text-decoration:none;color:inherit}}
 
 /* ── 홈: 수목금토+기타 한 줄 타일 ── */
 .day-row{{display:flex;gap:2px;margin-bottom:10px}}
-.day-tile{{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;
+.day-tile{{position:relative;flex:1;min-width:0;display:flex;align-items:center;justify-content:center;
   padding:2px 0;cursor:pointer;transition:transform .12s;-webkit-tap-highlight-color:transparent}}
+.day-tile::before{{content:'';position:absolute;top:50%;left:50%;width:58px;height:58px;
+  border-radius:50%;background:#fff;box-shadow:0 4px 12px rgba(27,28,28,.09);
+  transform:translate(-50%,-50%);z-index:0}}
 .day-tile:active{{transform:scale(.93)}}
-.day-tile .di{{width:52px;height:52px;flex:none;
+.day-tile .di{{position:relative;z-index:1;width:52px;height:52px;flex:none;
   clip-path:path('M21,1.5 C29,0.5 41,4 41.5,16 C42,26 40,34 31,39 C22,44 9,42 4,33 C-1,24 1,11 9,5 C13,2.2 17,2 21,1.5 Z');
   background:radial-gradient(circle at 33% 28%,
     color-mix(in srgb, var(--c) 40%, #fff) 0%,
