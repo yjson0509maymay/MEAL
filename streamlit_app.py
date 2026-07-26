@@ -224,12 +224,18 @@ DAY_TAB_HTML = """
 
 def build_day_section(day_id, day_label, subtitle, color_var, meals):
     drink = find_drink_form(day_label)
+    drink_icon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 9h2a2 2 0 0 1 0 4h-2"/></svg>'
     drink_badge = ""
-    if drink:
-        drink_badge = f"""<a class="drink-badge" href="{drink['form_url']}" target="_blank">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 9h2a2 2 0 0 1 0 4h-2"/></svg>
-      {drink['meal_time']} 음료
-    </a>"""
+    if day_label == "수요일":
+        drink_badge = f'''<span class="drink-badge drink-badge-disabled">
+      {drink_icon}
+      커피 주문은 내일 아침부터
+    </span>'''
+    elif drink:
+        drink_badge = f'''<a class="drink-badge" style="--c:var({color_var})" href="{drink['form_url']}" target="_blank">
+      {drink_icon}
+      커피 주문
+    </a>'''
     cards = ""
     for mt in MEAL_ORDER:
         if mt not in meals:
@@ -462,9 +468,11 @@ a{{text-decoration:none;color:inherit}}
 .dayhead-row{{display:flex;align-items:center;justify-content:center;gap:8px}}
 .dayhead .dt{{font-size:36px;font-weight:900;color:var(--c);letter-spacing:-.02em}}
 .dayhead .ds{{font-size:14px;color:var(--muted);margin-top:4px}}
-.drink-badge{{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;
-  color:var(--c);background:var(--card-low);border:1px solid var(--line);border-radius:999px;
-  padding:4px 10px;text-decoration:none;white-space:nowrap;-webkit-tap-highlight-color:transparent}}
+.drink-badge{{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:800;
+  color:#fff;background:var(--c);border-radius:999px;box-shadow:0 3px 10px rgba(27,28,28,.18);
+  padding:5px 12px;text-decoration:none;white-space:nowrap;-webkit-tap-highlight-color:transparent}}
+.drink-badge-disabled{{color:var(--muted);background:var(--card-low);box-shadow:none;
+  border:1px solid var(--line);cursor:default}}
 .mcard{{background:var(--card);border-radius:var(--r-xl);padding:18px;margin-bottom:14px;border:1px solid var(--line);border-top:5px solid var(--c);box-shadow:0 6px 22px rgba(27,28,28,.06)}}
 .mhead{{display:flex;align-items:center;gap:9px;margin-bottom:11px}}
 .mhead .mi{{width:24px;height:24px;color:var(--c);flex:none}}
