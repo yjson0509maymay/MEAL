@@ -368,7 +368,7 @@ def build_day_section(day_id, day_label, subtitle, color_var, meals):
     {shopping_box}
     {timeline_block}
     {cards}
-    <div class="foot">2026 통영 위드TT</div>
+    <div class="foot">우리들교회 위드공동체 통영TT</div>
   </div>
 </section>"""
 
@@ -403,7 +403,7 @@ def build_extra_section(extra_data):
       <div class="ds">준비물 · 상시 구비품 · 기타 안내</div>
     </div>
     {sections_html}
-    <div class="foot">2026 통영 위드TT</div>
+    <div class="foot">우리들교회 위드공동체 통영TT</div>
   </div>
 </section>"""
 
@@ -703,7 +703,7 @@ a{{text-decoration:none;color:inherit}}
     </div>
 
     {sheet_btn}
-    <div class="foot">2026 통영 위드TT</div>
+    <div class="foot">우리들교회 위드공동체 통영TT</div>
   </div>
 </section>
 
@@ -742,7 +742,7 @@ a{{text-decoration:none;color:inherit}}
         <div style="font-size:11px;color:var(--muted);margin-top:6px">QR 스캔 후 계좌번호를 확인하세요</div>
       </div>
     </div>
-    <div class="foot">2026 통영 위드TT</div>
+    <div class="foot">우리들교회 위드공동체 통영TT</div>
   </div>
 </section>
 
