@@ -499,8 +499,8 @@ a{{text-decoration:none;color:inherit}}
 .topbar .hb svg{{width:24px;height:24px}}
 .topbar-title{{flex:1;margin-right:34px;display:flex;justify-content:center}}
 .topbar-inner{{display:inline-block}}
-.topbar-eyebrow{{font-size:10px;font-weight:700;color:var(--muted);opacity:.55;
-  letter-spacing:.06em;margin:0 0 -2px 31px}}
+.topbar-eyebrow{{text-align:center;font-size:10px;font-weight:700;color:var(--muted);opacity:.55;
+  letter-spacing:.06em;margin:0 0 -2px}}
 .topbar h1{{display:flex;align-items:center;gap:7px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:21px;color:var(--primary);letter-spacing:-.01em}}
 .app-logo{{width:24px;height:24px;display:block;flex:none}}
 
