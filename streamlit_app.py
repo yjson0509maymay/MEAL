@@ -534,7 +534,7 @@ a{{text-decoration:none;color:inherit}}
   border-radius:50%;background:#fff;box-shadow:0 4px 12px rgba(27,28,28,.09);
   transform:translate(-50%,-50%);z-index:0}}
 .day-tile:active{{transform:scale(.93)}}
-.day-tile .di{{position:relative;z-index:1;top:4px;left:4px;width:52px;height:52px;flex:none;
+.day-tile .di{{position:relative;z-index:1;top:6px;left:6px;width:52px;height:52px;flex:none;
   clip-path:path('M21,1.5 C29,0.5 41,4 41.5,16 C42,26 40,34 31,39 C22,44 9,42 4,33 C-1,24 1,11 9,5 C13,2.2 17,2 21,1.5 Z');
   background:radial-gradient(circle at 33% 28%,
     color-mix(in srgb, var(--c) 40%, #fff) 0%,
