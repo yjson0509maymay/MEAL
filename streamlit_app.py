@@ -261,6 +261,7 @@ DAY_TAB_HTML = """
 </div>"""
 
 def build_day_section(day_id, day_label, subtitle, color_var, meals):
+    logo = b64("assets/logo.png", "image/png")
     drink = find_drink_form(day_label)
     drink_icon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 9h2a2 2 0 0 1 0 4h-2"/></svg>'
     drink_badge = ""
@@ -370,13 +371,14 @@ def build_day_section(day_id, day_label, subtitle, color_var, meals):
     {shopping_box}
     {timeline_block}
     {cards}
-    <div class="foot">우리들교회 위드공동체 통영TT</div>
+    <div class="foot"><img src="{logo}" alt="교회 로고" class="foot-logo">위드공동체 통영TT</div>
   </div>
 </section>"""
 
 # ─────────────────────── 메인 HTML 빌드 ───────────────────────
 def build_extra_section(extra_data):
     """기타사항 섹션 HTML을 동적으로 생성합니다."""
+    logo = b64("assets/logo.png", "image/png")
     CATEGORY_ORDER = ["아침 공통 메뉴", "공용 식재료", "상시 간식", "밥 담당", "준비물"]
     all_categories = CATEGORY_ORDER + [c for c in extra_data if c not in CATEGORY_ORDER]
 
@@ -405,7 +407,7 @@ def build_extra_section(extra_data):
       <div class="ds">준비물 · 상시 구비품 · 기타 안내</div>
     </div>
     {sections_html}
-    <div class="foot">우리들교회 위드공동체 통영TT</div>
+    <div class="foot"><img src="{logo}" alt="교회 로고" class="foot-logo">위드공동체 통영TT</div>
   </div>
 </section>"""
 
@@ -640,7 +642,9 @@ a{{text-decoration:none;color:inherit}}
 .support .nm{{font-size:14px;color:var(--ink-soft);margin-top:2px}}
 .support .pd{{font-size:13px;color:var(--muted);margin-top:6px}}
 
-.foot{{text-align:center;font-size:12px;color:var(--muted);padding:20px 20px 8px;line-height:1.5}}
+.foot{{text-align:center;font-size:12px;color:var(--muted);padding:20px 20px 8px;line-height:1.5;
+  display:flex;align-items:center;justify-content:center;gap:5px}}
+.foot-logo{{width:14px;height:14px;display:block;flex:none;opacity:.75}}
 
 /* 하단 탭바 */
 .tabbar{{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:398px;background:#fff;border:1px solid var(--line);border-radius:999px;display:flex;justify-content:space-around;padding:9px 8px calc(9px + env(safe-area-inset-bottom));box-shadow:0 10px 30px rgba(27,28,28,.12);z-index:30}}
@@ -709,7 +713,7 @@ a{{text-decoration:none;color:inherit}}
     </div>
 
     {sheet_btn}
-    <div class="foot">우리들교회 위드공동체 통영TT</div>
+    <div class="foot"><img src="{logo}" alt="교회 로고" class="foot-logo">위드공동체 통영TT</div>
   </div>
 </section>
 
@@ -748,7 +752,7 @@ a{{text-decoration:none;color:inherit}}
         <div style="font-size:11px;color:var(--muted);margin-top:6px">QR 스캔 후 계좌번호를 확인하세요</div>
       </div>
     </div>
-    <div class="foot">우리들교회 위드공동체 통영TT</div>
+    <div class="foot"><img src="{logo}" alt="교회 로고" class="foot-logo">위드공동체 통영TT</div>
   </div>
 </section>
 
