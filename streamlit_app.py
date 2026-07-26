@@ -536,10 +536,10 @@ a{{text-decoration:none;color:inherit}}
 .day-tile .di{{width:42px;height:42px;flex:none;
   clip-path:path('M21,1.5 C29,0.5 41,4 41.5,16 C42,26 40,34 31,39 C22,44 9,42 4,33 C-1,24 1,11 9,5 C13,2.2 17,2 21,1.5 Z');
   background:radial-gradient(circle at 33% 28%,
-    color-mix(in srgb, var(--c) 62%, #fff) 0%,
-    color-mix(in srgb, var(--c) 30%, #fff) 55%,
-    color-mix(in srgb, var(--c) 13%, #fff) 100%);
-  filter:drop-shadow(0 2px 4px color-mix(in srgb, var(--c) 32%, transparent));
+    color-mix(in srgb, var(--c) 40%, #fff) 0%,
+    color-mix(in srgb, var(--c) 20%, #fff) 55%,
+    color-mix(in srgb, var(--c) 8%, #fff) 100%);
+  filter:drop-shadow(0 2px 3px color-mix(in srgb, var(--c) 20%, transparent));
   color:var(--c);
   display:flex;align-items:center;justify-content:center;
   font-size:19px;font-weight:900}}
