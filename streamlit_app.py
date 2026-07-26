@@ -324,7 +324,6 @@ def build_day_section(day_id, day_label, subtitle, color_var, meals):
   </div>
   <div class="inner{warm}">
     <span class="dish">{esc(info.get("dish",""))}</span>
-    <div class="memo">{esc(info.get("memo",""))}</div>
     {owner_tag}
   </div>
   {ingredients_block}
@@ -593,22 +592,21 @@ a{{text-decoration:none;color:inherit}}
 .tl-meal{{display:inline-block;margin-top:6px;font-size:12px;font-weight:800;color:var(--c);
   background:var(--card-low);border-radius:999px;padding:4px 11px}}
 
-.mcard{{background:var(--card);border-radius:var(--r-xl);padding:18px;margin-bottom:14px;border:1px solid var(--line);border-top:5px solid var(--c);box-shadow:0 6px 22px rgba(27,28,28,.06)}}
-.mhead{{display:flex;align-items:center;gap:9px;margin-bottom:11px}}
-.mhead .mi{{width:24px;height:24px;color:var(--c);flex:none}}
-.mhead .mi svg{{width:24px;height:24px}}
-.mhead .ml{{font-size:17px;font-weight:800;color:var(--ink);flex:1}}
-.mhead .mt{{font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);background:var(--inner);padding:4px 10px;border-radius:999px}}
-.inner{{background:var(--inner);border-radius:var(--r-md);padding:13px 15px}}
+.mcard{{background:var(--card);border-radius:var(--r-lg);padding:13px 14px;margin-bottom:10px;border:1px solid var(--line);border-top:4px solid var(--c);box-shadow:0 4px 14px rgba(27,28,28,.05)}}
+.mhead{{display:flex;align-items:center;gap:8px;margin-bottom:8px}}
+.mhead .mi{{width:20px;height:20px;color:var(--c);flex:none}}
+.mhead .mi svg{{width:20px;height:20px}}
+.mhead .ml{{font-size:15px;font-weight:800;color:var(--ink);flex:1}}
+.mhead .mt{{font-family:'Plus Jakarta Sans',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--ink-soft);background:var(--inner);padding:3px 9px;border-radius:999px}}
+.inner{{background:var(--inner);border-radius:var(--r-md);padding:10px 12px}}
 .inner.warm{{background:var(--inner-warm)}}
-.inner .dish{{font-size:16px;font-weight:800;color:var(--ink)}}
-.inner .memo{{font-size:13px;color:var(--ink-soft);line-height:1.55;margin-top:4px}}
-.owner{{margin-top:8px;display:inline-block;font-size:11px;font-weight:800;color:var(--primary);
-  background:var(--primary-soft);padding:3px 10px;border-radius:999px}}
+.inner .dish{{font-size:14.5px;font-weight:800;color:var(--ink)}}
+.owner{{margin-top:6px;display:inline-block;font-size:10.5px;font-weight:800;color:var(--primary);
+  background:var(--primary-soft);padding:2px 9px;border-radius:999px}}
 .owner-empty{{color:var(--muted);background:var(--card-low)}}
-.ingredients{{margin-top:10px;padding:9px 12px;background:var(--card-low);border-radius:var(--r-md);
-  font-size:12px;color:var(--ink-soft);line-height:1.6}}
-.ingredients b{{display:block;font-size:11px;font-weight:800;color:var(--ink);margin-bottom:2px}}
+.ingredients{{margin-top:8px;padding:7px 10px;background:var(--card-low);border-radius:var(--r-md);
+  font-size:11.5px;color:var(--ink-soft);line-height:1.5}}
+.ingredients b{{display:block;font-size:10.5px;font-weight:800;color:var(--ink);margin-bottom:2px}}
 .ingredients-empty{{color:var(--muted);font-style:italic}}
 .ingredients-empty b{{color:var(--muted)}}
 
