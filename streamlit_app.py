@@ -352,14 +352,7 @@ def build_day_section(day_id, day_label, subtitle, color_var, meals):
   <ul id="shop-list-{day_id}" class="shop-list" style="display:none">{shop_rows}</ul>
 </div>"""
     else:
-        shopping_box = f"""
-<div class="shopbox shopbox-empty" style="--c:var({color_var})">
-  <div class="shop-title">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg>
-    오늘 장보기
-  </div>
-  <div class="shop-empty-msg">아직 등록된 준비재료가 없어요</div>
-</div>"""
+        shopping_box = ""
 
     return f"""<section id="page-{day_id}" class="page-sec" style="--c:var({color_var})">
   {DAY_TAB_HTML}
@@ -585,7 +578,6 @@ a{{text-decoration:none;color:inherit}}
   border-bottom:1px solid var(--line)}}
 .shop-list li:last-child{{border-bottom:none;padding-bottom:0}}
 .shop-list li b{{display:block;font-size:12px;font-weight:800;color:var(--ink);margin-bottom:1px}}
-.shopbox-empty .shop-empty-msg{{font-size:12.5px;color:var(--muted);font-style:italic}}
 
 /* 일정 타임라인 */
 .tl-wrap{{background:var(--card);border-radius:var(--r-xl);padding:16px 18px;margin-bottom:16px;
