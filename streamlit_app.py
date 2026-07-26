@@ -341,11 +341,14 @@ def build_day_section(day_id, day_label, subtitle, color_var, meals):
     if shop_rows:
         shopping_box = f"""
 <div class="shopbox" style="--c:var({color_var})">
-  <div class="shop-title">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg>
-    오늘 장보기
+  <div class="shop-title" onclick="toggleShop('{day_id}')">
+    <span class="shop-title-label">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg>
+      오늘 장보기
+    </span>
+    <svg id="shop-chev-{day_id}" class="shop-chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
   </div>
-  <ul class="shop-list">{shop_rows}</ul>
+  <ul id="shop-list-{day_id}" class="shop-list" style="display:none">{shop_rows}</ul>
 </div>"""
     else:
         shopping_box = f"""
@@ -568,9 +571,12 @@ a{{text-decoration:none;color:inherit}}
 /* 오늘 장보기 */
 .shopbox{{background:var(--card);border-radius:var(--r-xl);padding:16px 18px;margin-bottom:16px;
   border:1px solid var(--line);border-top:5px solid var(--c);box-shadow:0 6px 22px rgba(27,28,28,.06)}}
-.shop-title{{display:flex;align-items:center;gap:7px;font-size:15px;font-weight:800;color:var(--c);
-  margin-bottom:10px}}
-.shop-list{{list-style:none;margin:0;padding:0}}
+.shop-title{{display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:800;
+  color:var(--c);cursor:pointer;-webkit-tap-highlight-color:transparent}}
+.shop-title-label{{display:flex;align-items:center;gap:7px}}
+.shop-chev{{transition:transform .2s;flex:none}}
+.shop-chev.open{{transform:rotate(180deg)}}
+.shop-list{{list-style:none;margin:10px 0 0;padding:0}}
 .shop-list li{{font-size:13px;color:var(--ink-soft);line-height:1.6;padding:7px 0;
   border-bottom:1px solid var(--line)}}
 .shop-list li:last-child{{border-bottom:none;padding-bottom:0}}
@@ -819,6 +825,15 @@ function schedDist(a,b){{
     if(e.touches.length===0) dragging=false;
   }});
 }})();
+
+function toggleShop(dayId){{
+  var list = document.getElementById('shop-list-'+dayId);
+  var chev = document.getElementById('shop-chev-'+dayId);
+  if(!list) return;
+  var opening = list.style.display === 'none';
+  list.style.display = opening ? 'block' : 'none';
+  if(chev) chev.classList.toggle('open', opening);
+}}
 
 function showSchedule(){{
   document.getElementById('hero-poster').style.display = 'none';
