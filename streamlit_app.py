@@ -286,9 +286,10 @@ def build_day_section(day_id, day_label, subtitle, color_var, meals):
                 owner_txt = f' · 담당 {esc(owner_val)}' if owner_val else ""
                 meal_tag = f'<div class="tl-meal">{esc(meal_key)}: {esc(dish)}{owner_txt}</div>'
                 used_meals.add(meal_key)
+        text_html = esc(text).replace(" · ", "<br>")
         tl_rows += f'''<div class="tl-item">
       <div class="tl-time">{esc(t)}</div>
-      <div class="tl-text">{esc(text)}</div>
+      <div class="tl-text">{text_html}</div>
       {meal_tag}
     </div>'''
     timeline_block = f"""
