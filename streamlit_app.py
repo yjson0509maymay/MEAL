@@ -195,6 +195,49 @@ MEAL_ICONS = {
 }
 MEAL_ORDER = ["아침", "오전", "점심", "간식", "저녁", "야식"]
 
+# ─────────────────────── 일정 타임라인 (26년 통영TT 최종 타임 테이블) ───────────────────────
+DAY_SCHEDULE = {
+    "수요일": [
+        ("06:00–08:00", "/////"),
+        ("08:00–13:00", "8:30분 종합운동장 2번출구 출발 · 휴게소 점심식사 · 14:00 교회도착"),
+        ("14:00–17:00", "도착예배/OT · 예배/데코: 홍보 및 행사안내 부착 · 식사: 식사준비"),
+        ("18:00", "저녁식사"),
+        ("19:00–21:00", "큐티콘서트 1일차 (19:30-21:30)"),
+        ("22:00–23:00", "피드백 나눔"),
+        ("0:00", "교회이동 및 취침"),
+    ],
+    "목요일": [
+        ("06:00–08:00", "1. 아침식사(~08:00까지) · 2. ZOOM큐티(07:00시작/해당자만) · 3. 교회로 9시까지 출발"),
+        ("09:00", "아침큐티(교회)"),
+        ("10:00–11:00", "오전사역 · 팀별사역준비"),
+        ("12:00", "점심식사"),
+        ("13:00–17:00", "예배/데코: 오이소사역 · 식사: 식사 준비"),
+        ("18:00", "저녁식사"),
+        ("19:00–21:00", "큐티콘서트 2일차 (19:30-21:30)"),
+        ("22:00–23:00", "피드백나눔"),
+        ("0:00", "교회이동 및 취침"),
+    ],
+    "금요일": [
+        ("06:00–08:00", "1. 아침식사(~08:00까지) · 2. ZOOM큐티(07:00시작/해당자만) · 3. 교회로 9시까지 출발"),
+        ("09:00", "아침큐티(교회)"),
+        ("10:00–11:00", "예배: 노방전도 · 데코: 사랑방/교회데코 · 식사: 식사준비"),
+        ("12:00", "점심식사"),
+        ("13:00–17:00", "동피랑마을 및 시장탐방 · 바닷가 구경"),
+        ("18:00", "저녁식사(외식)"),
+        ("19:00–21:00", "카페 피드백나눔"),
+        ("22:00–23:00", "미비된 활동 정리"),
+        ("0:00", "교회이동 및 취침"),
+    ],
+    "토요일": [
+        ("06:00–07:00", "1. 아침식사(~08:00까지) · 2. 교회로 8:30까지 짐 다들고 교회로 이동"),
+        ("09:00", "8:30-9:30 아침큐티"),
+        ("10:00–12:00", "통영요트투어"),
+        ("13:00", "점심식사"),
+        ("14:00–21:00", "서울로이동 · 19:00경 종합운동장 하차예정"),
+        ("22:00–23:00", "///"),
+    ],
+}
+
 # ─────────────────────── HTML 유틸 ───────────────────────
 def b64(path, mime):
     try:
@@ -262,6 +305,44 @@ def build_day_section(day_id, day_label, subtitle, color_var, meals):
   {ingredients_block}
 </div>"""
 
+    shop_rows = ""
+    for mt in MEAL_ORDER:
+        if mt not in meals:
+            continue
+        ing_val = meals[mt].get("ingredients", "").strip()
+        if ing_val:
+            shop_rows += f'<li><b>{esc(mt)}</b>{esc(ing_val)}</li>'
+    if shop_rows:
+        shopping_box = f"""
+<div class="shopbox" style="--c:var({color_var})">
+  <div class="shop-title">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg>
+    오늘 장보기
+  </div>
+  <ul class="shop-list">{shop_rows}</ul>
+</div>"""
+    else:
+        shopping_box = f"""
+<div class="shopbox shopbox-empty" style="--c:var({color_var})">
+  <div class="shop-title">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg>
+    오늘 장보기
+  </div>
+  <div class="shop-empty-msg">아직 등록된 준비재료가 없어요</div>
+</div>"""
+
+    tl_rows = ""
+    for t, text in DAY_SCHEDULE.get(day_label, []):
+        tl_rows += f'''<div class="tl-item">
+      <div class="tl-time">{esc(t)}</div>
+      <div class="tl-text">{esc(text)}</div>
+    </div>'''
+    timeline_block = f"""
+<div class="tl-wrap" style="--c:var({color_var})">
+  <div class="tl-title">일정</div>
+  <div class="timeline">{tl_rows}</div>
+</div>""" if tl_rows else ""
+
     return f"""<section id="page-{day_id}" class="page-sec" style="--c:var({color_var})">
   {DAY_TAB_HTML}
   <div class="page">
@@ -269,6 +350,8 @@ def build_day_section(day_id, day_label, subtitle, color_var, meals):
       <div class="dayhead-row"><div class="dt">{day_label}</div>{drink_badge}</div>
       <div class="ds">{subtitle}</div>
     </div>
+    {shopping_box}
+    {timeline_block}
     {cards}
     <div class="foot">통영 물댄동산교회 위드공동체 · 2026 여름 아웃리치</div>
   </div>
@@ -467,6 +550,32 @@ a{{text-decoration:none;color:inherit}}
   padding:5px 12px;text-decoration:none;white-space:nowrap;-webkit-tap-highlight-color:transparent}}
 .drink-badge-disabled{{color:var(--muted);background:var(--card-low);box-shadow:none;
   border:1px solid var(--line);cursor:default}}
+
+/* 오늘 장보기 */
+.shopbox{{background:var(--card);border-radius:var(--r-xl);padding:16px 18px;margin-bottom:16px;
+  border:1px solid var(--line);border-top:5px solid var(--c);box-shadow:0 6px 22px rgba(27,28,28,.06)}}
+.shop-title{{display:flex;align-items:center;gap:7px;font-size:15px;font-weight:800;color:var(--c);
+  margin-bottom:10px}}
+.shop-list{{list-style:none;margin:0;padding:0}}
+.shop-list li{{font-size:13px;color:var(--ink-soft);line-height:1.6;padding:7px 0;
+  border-bottom:1px solid var(--line)}}
+.shop-list li:last-child{{border-bottom:none;padding-bottom:0}}
+.shop-list li b{{display:block;font-size:12px;font-weight:800;color:var(--ink);margin-bottom:1px}}
+.shopbox-empty .shop-empty-msg{{font-size:12.5px;color:var(--muted);font-style:italic}}
+
+/* 일정 타임라인 */
+.tl-wrap{{background:var(--card);border-radius:var(--r-xl);padding:16px 18px;margin-bottom:16px;
+  border:1px solid var(--line);box-shadow:0 6px 22px rgba(27,28,28,.06)}}
+.tl-title{{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:12px}}
+.timeline{{position:relative;padding-left:16px}}
+.timeline::before{{content:'';position:absolute;left:3px;top:5px;bottom:5px;width:2px;background:var(--line)}}
+.tl-item{{position:relative;padding-bottom:14px}}
+.tl-item:last-child{{padding-bottom:0}}
+.tl-item::before{{content:'';position:absolute;left:-16px;top:3px;width:8px;height:8px;
+  border-radius:50%;background:var(--c);box-shadow:0 0 0 2px var(--card)}}
+.tl-time{{font-size:11.5px;font-weight:800;color:var(--c)}}
+.tl-text{{font-size:13px;color:var(--ink-soft);line-height:1.5;margin-top:2px}}
+
 .mcard{{background:var(--card);border-radius:var(--r-xl);padding:18px;margin-bottom:14px;border:1px solid var(--line);border-top:5px solid var(--c);box-shadow:0 6px 22px rgba(27,28,28,.06)}}
 .mhead{{display:flex;align-items:center;gap:9px;margin-bottom:11px}}
 .mhead .mi{{width:24px;height:24px;color:var(--c);flex:none}}
