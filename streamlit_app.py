@@ -533,12 +533,11 @@ a{{text-decoration:none;color:inherit}}
   align-items:center;gap:7px;border:1px solid var(--line);cursor:pointer;
   transition:transform .12s;-webkit-tap-highlight-color:transparent}}
 .day-tile:active{{transform:scale(.95)}}
-.day-tile .di{{width:30px;height:30px;border-radius:.65rem;flex:none;
+.day-tile .di{{width:42px;height:42px;border-radius:.85rem;flex:none;
   background:color-mix(in srgb, var(--c) 16%, #fff);color:var(--c);
-  display:flex;align-items:center;justify-content:center}}
-.day-tile .di svg{{width:16px;height:16px}}
-.day-tile .dl{{font-size:14px;font-weight:800;color:var(--ink)}}
-.day-tile .ds{{font-size:9.5px;color:var(--muted);text-align:center;line-height:1.25;word-break:keep-all}}
+  display:flex;align-items:center;justify-content:center;
+  font-size:19px;font-weight:900}}
+.day-tile .di-sm{{font-size:12px}}
 
 /* 팀 타일 */
 .tile-wide{{width:100%;background:var(--primary);color:#fff;border-radius:999px;
@@ -669,24 +668,19 @@ a{{text-decoration:none;color:inherit}}
     <!-- 수목금토 한 줄 -->
     <div class="day-row">
       <div class="day-tile" style="--c:var(--wed)" onclick="show('wed','meal')">
-        <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 10h14v6a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3z"/><path d="M3 10h18M8 10V8.5M16 10V8.5M9.5 5.5c.6-1 2.4-1 3 0M12.5 4c.6-1 2.4-1 3 0"/></svg></span>
-        <span class="dl">수</span>
+        <span class="di">수</span>
       </div>
       <div class="day-tile" style="--c:var(--thu)" onclick="show('thu','meal')">
-        <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/></svg></span>
-        <span class="dl">목</span>
+        <span class="di">목</span>
       </div>
       <div class="day-tile" style="--c:var(--fri)" onclick="show('fri','meal')">
-        <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4.5" r="1.8"/><path d="M11 8.5 9 13l2.5 1.5L13 21M13 11l3 1.5M9 13l-2 5M13 11l-1-2.5"/></svg></span>
-        <span class="dl">금</span>
+        <span class="di">금</span>
       </div>
       <div class="day-tile" style="--c:var(--sat)" onclick="show('sat','meal')">
-        <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16l-1 11H5z"/><path d="M4 9 5.5 4h13L20 9M9 9V4.5M15 9V4.5"/></svg></span>
-        <span class="dl">토</span>
+        <span class="di">토</span>
       </div>
       <div class="day-tile" style="--c:#7c6fe8" onclick="show('extra','extra')">
-        <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="M9 9h6M9 12h6M9 15h4"/></svg></span>
-        <span class="dl">기타</span>
+        <span class="di di-sm">기타</span>
       </div>
     </div>
 
