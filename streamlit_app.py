@@ -707,8 +707,9 @@ function schedDist(a,b){{
       var b={{x:e.touches[1].clientX,y:e.touches[1].clientY}};
       var d = schedDist(a,b);
       schedState.scale = Math.min(4, Math.max(1, startScale * (d/startDist)));
+      if(schedState.scale<=1){{ schedState.tx=0; schedState.ty=0; }}
       schedApply();
-    }} else if(e.touches.length===1 && dragging){{
+    }} else if(e.touches.length===1 && dragging && schedState.scale>1){{
       e.preventDefault();
       var dx = e.touches[0].clientX - lastX;
       var dy = e.touches[0].clientY - lastY;
