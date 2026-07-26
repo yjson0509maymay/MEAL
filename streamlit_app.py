@@ -196,45 +196,46 @@ MEAL_ICONS = {
 MEAL_ORDER = ["아침", "오전", "점심", "간식", "저녁", "야식"]
 
 # ─────────────────────── 일정 타임라인 (26년 통영TT 최종 타임 테이블) ───────────────────────
+# (시간, 설명, 이 시간에 해당하는 식사종류 — 있으면 타임라인에 메뉴가 같이 표시됨)
 DAY_SCHEDULE = {
     "수요일": [
-        ("06:00–08:00", "/////"),
-        ("08:00–13:00", "8:30분 종합운동장 2번출구 출발 · 휴게소 점심식사 · 14:00 교회도착"),
-        ("14:00–17:00", "도착예배/OT · 예배/데코: 홍보 및 행사안내 부착 · 식사: 식사준비"),
-        ("18:00", "저녁식사"),
-        ("19:00–21:00", "큐티콘서트 1일차 (19:30-21:30)"),
-        ("22:00–23:00", "피드백 나눔"),
-        ("0:00", "교회이동 및 취침"),
+        ("06:00–08:00", "/////", None),
+        ("08:00–13:00", "8:30분 종합운동장 2번출구 출발 · 휴게소 점심식사 · 14:00 교회도착", None),
+        ("14:00–17:00", "도착예배/OT · 예배/데코: 홍보 및 행사안내 부착 · 식사: 식사준비", None),
+        ("18:00", "저녁식사", "저녁"),
+        ("19:00–21:00", "큐티콘서트 1일차 (19:30-21:30)", None),
+        ("22:00–23:00", "피드백 나눔", None),
+        ("0:00", "교회이동 및 취침", None),
     ],
     "목요일": [
-        ("06:00–08:00", "1. 아침식사(~08:00까지) · 2. ZOOM큐티(07:00시작/해당자만) · 3. 교회로 9시까지 출발"),
-        ("09:00", "아침큐티(교회)"),
-        ("10:00–11:00", "오전사역 · 팀별사역준비"),
-        ("12:00", "점심식사"),
-        ("13:00–17:00", "예배/데코: 오이소사역 · 식사: 식사 준비"),
-        ("18:00", "저녁식사"),
-        ("19:00–21:00", "큐티콘서트 2일차 (19:30-21:30)"),
-        ("22:00–23:00", "피드백나눔"),
-        ("0:00", "교회이동 및 취침"),
+        ("06:00–08:00", "1. 아침식사(~08:00까지) · 2. ZOOM큐티(07:00시작/해당자만) · 3. 교회로 9시까지 출발", "아침"),
+        ("09:00", "아침큐티(교회)", None),
+        ("10:00–11:00", "오전사역 · 팀별사역준비", None),
+        ("12:00", "점심식사", "점심"),
+        ("13:00–17:00", "예배/데코: 오이소사역 · 식사: 식사 준비", None),
+        ("18:00", "저녁식사", "저녁"),
+        ("19:00–21:00", "큐티콘서트 2일차 (19:30-21:30)", None),
+        ("22:00–23:00", "피드백나눔", None),
+        ("0:00", "교회이동 및 취침", None),
     ],
     "금요일": [
-        ("06:00–08:00", "1. 아침식사(~08:00까지) · 2. ZOOM큐티(07:00시작/해당자만) · 3. 교회로 9시까지 출발"),
-        ("09:00", "아침큐티(교회)"),
-        ("10:00–11:00", "예배: 노방전도 · 데코: 사랑방/교회데코 · 식사: 식사준비"),
-        ("12:00", "점심식사"),
-        ("13:00–17:00", "동피랑마을 및 시장탐방 · 바닷가 구경"),
-        ("18:00", "저녁식사(외식)"),
-        ("19:00–21:00", "카페 피드백나눔"),
-        ("22:00–23:00", "미비된 활동 정리"),
-        ("0:00", "교회이동 및 취침"),
+        ("06:00–08:00", "1. 아침식사(~08:00까지) · 2. ZOOM큐티(07:00시작/해당자만) · 3. 교회로 9시까지 출발", "아침"),
+        ("09:00", "아침큐티(교회)", None),
+        ("10:00–11:00", "예배: 노방전도 · 데코: 사랑방/교회데코 · 식사: 식사준비", "오전"),
+        ("12:00", "점심식사", "점심"),
+        ("13:00–17:00", "동피랑마을 및 시장탐방 · 바닷가 구경", None),
+        ("18:00", "저녁식사(외식)", "저녁"),
+        ("19:00–21:00", "카페 피드백나눔", None),
+        ("22:00–23:00", "미비된 활동 정리", None),
+        ("0:00", "교회이동 및 취침", None),
     ],
     "토요일": [
-        ("06:00–07:00", "1. 아침식사(~08:00까지) · 2. 교회로 8:30까지 짐 다들고 교회로 이동"),
-        ("09:00", "8:30-9:30 아침큐티"),
-        ("10:00–12:00", "통영요트투어"),
-        ("13:00", "점심식사"),
-        ("14:00–21:00", "서울로이동 · 19:00경 종합운동장 하차예정"),
-        ("22:00–23:00", "///"),
+        ("06:00–07:00", "1. 아침식사(~08:00까지) · 2. 교회로 8:30까지 짐 다들고 교회로 이동", "아침"),
+        ("09:00", "8:30-9:30 아침큐티", None),
+        ("10:00–12:00", "통영요트투어", None),
+        ("13:00", "점심식사", "점심"),
+        ("14:00–21:00", "서울로이동 · 19:00경 종합운동장 하차예정", None),
+        ("22:00–23:00", "///", None),
     ],
 }
 
@@ -273,9 +274,32 @@ def build_day_section(day_id, day_label, subtitle, color_var, meals):
       {drink_icon}
       커피 주문
     </a>'''
+    tl_rows = ""
+    used_meals = set()
+    for t, text, meal_key in DAY_SCHEDULE.get(day_label, []):
+        meal_tag = ""
+        if meal_key and meal_key in meals:
+            info = meals[meal_key]
+            dish = info.get("dish", "").strip()
+            if dish:
+                owner_val = info.get("owner", "").strip()
+                owner_txt = f' · 담당 {esc(owner_val)}' if owner_val else ""
+                meal_tag = f'<div class="tl-meal">{esc(meal_key)}: {esc(dish)}{owner_txt}</div>'
+                used_meals.add(meal_key)
+        tl_rows += f'''<div class="tl-item">
+      <div class="tl-time">{esc(t)}</div>
+      <div class="tl-text">{esc(text)}</div>
+      {meal_tag}
+    </div>'''
+    timeline_block = f"""
+<div class="tl-wrap" style="--c:var({color_var})">
+  <div class="tl-title">일정</div>
+  <div class="timeline">{tl_rows}</div>
+</div>""" if tl_rows else ""
+
     cards = ""
     for mt in MEAL_ORDER:
-        if mt not in meals:
+        if mt not in meals or mt in used_meals:
             continue
         info = meals[mt]
         icon = MEAL_ICONS.get(mt, MEAL_ICONS["저녁"])
@@ -311,7 +335,9 @@ def build_day_section(day_id, day_label, subtitle, color_var, meals):
             continue
         ing_val = meals[mt].get("ingredients", "").strip()
         if ing_val:
-            shop_rows += f'<li><b>{esc(mt)}</b>{esc(ing_val)}</li>'
+            dish_val = meals[mt].get("dish", "").strip()
+            label = f"{mt}: {dish_val}" if dish_val else mt
+            shop_rows += f'<li><b>{esc(label)}</b>{esc(ing_val)}</li>'
     if shop_rows:
         shopping_box = f"""
 <div class="shopbox" style="--c:var({color_var})">
@@ -330,18 +356,6 @@ def build_day_section(day_id, day_label, subtitle, color_var, meals):
   </div>
   <div class="shop-empty-msg">아직 등록된 준비재료가 없어요</div>
 </div>"""
-
-    tl_rows = ""
-    for t, text in DAY_SCHEDULE.get(day_label, []):
-        tl_rows += f'''<div class="tl-item">
-      <div class="tl-time">{esc(t)}</div>
-      <div class="tl-text">{esc(text)}</div>
-    </div>'''
-    timeline_block = f"""
-<div class="tl-wrap" style="--c:var({color_var})">
-  <div class="tl-title">일정</div>
-  <div class="timeline">{tl_rows}</div>
-</div>""" if tl_rows else ""
 
     return f"""<section id="page-{day_id}" class="page-sec" style="--c:var({color_var})">
   {DAY_TAB_HTML}
@@ -575,6 +589,8 @@ a{{text-decoration:none;color:inherit}}
   border-radius:50%;background:var(--c);box-shadow:0 0 0 2px var(--card)}}
 .tl-time{{font-size:11.5px;font-weight:800;color:var(--c)}}
 .tl-text{{font-size:13px;color:var(--ink-soft);line-height:1.5;margin-top:2px}}
+.tl-meal{{display:inline-block;margin-top:6px;font-size:12px;font-weight:800;color:var(--c);
+  background:var(--card-low);border-radius:999px;padding:4px 11px}}
 
 .mcard{{background:var(--card);border-radius:var(--r-xl);padding:18px;margin-bottom:14px;border:1px solid var(--line);border-top:5px solid var(--c);box-shadow:0 6px 22px rgba(27,28,28,.06)}}
 .mhead{{display:flex;align-items:center;gap:9px;margin-bottom:11px}}
