@@ -44,12 +44,6 @@ TEAM_LEADER_SHEET_ID = "1GkvF5xchfYbH1yQ015_zEdmd5O7YDdCa"
 
 # 아침 커피 주문 폼 (요일마다 별도 폼, 이름 + 음료 선택, 담당: 철수)
 DRINK_FORMS = {
-    "2026-07-29": {
-        "label": "수요일",
-        "meal_time": "저녁",
-        "form_url": "https://docs.google.com/forms/d/e/1FAIpQLSdqC65oxkZBCuBKZI845yA0PiQMNoxK1QsJBUNI4ScLryTLyA/viewform",
-        "sheet_id": "11wpG6oE6y36txCCGD3SEyHaUGof5rX5bgxIamJ2w2HE",
-    },
     "2026-07-30": {
         "label": "목요일",
         "meal_time": "아침",
