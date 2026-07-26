@@ -439,25 +439,25 @@ def build_html(meal_data, sheet_url, extra_data=None):
   </div>
 </div>
 <div style="text-align:center;padding:20px 20px 4px">
-  <div style="display:inline-block;background:#fff;border-radius:16px;padding:16px;
+  <div style="display:inline-block;background:#fff;border-radius:14px;padding:12px;
               box-shadow:0 4px 20px rgba(27,28,28,.07);border:1px solid var(--line)">
     <a href="https://ttmeal.streamlit.app" target="_blank" style="display:block;text-decoration:none;-webkit-tap-highlight-color:transparent;cursor:pointer">
       <img
-        src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=6&data=https://ttmeal.streamlit.app"
+        src="https://api.qrserver.com/v1/create-qr-code/?size=110x110&margin=6&data=https://ttmeal.streamlit.app"
         alt="앱 QR코드"
-        style="width:160px;height:160px;display:block;border-radius:6px;margin:0 auto"
+        style="width:110px;height:110px;display:block;border-radius:6px;margin:0 auto"
       >
     </a>
-    <div style="margin-top:10px;font-size:13px;font-weight:800;color:var(--ink);
+    <div style="margin-top:8px;font-size:12px;font-weight:800;color:var(--ink);
                 display:flex;align-items:center;justify-content:center;gap:5px">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)"
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--primary)"
            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="5" y="2" width="14" height="20" rx="2"/>
         <path d="M12 18h.01"/>
       </svg>
-      식단팀 앱 바로가기
+      식사팀 가이드 앱
     </div>
-    <div style="font-size:11px;color:var(--muted);margin-top:3px">카메라로 찍으면 바로 접속돼요</div>
+    <div style="font-size:10.5px;color:var(--muted);margin-top:3px">카메라로 찍으면 바로 접속돼요</div>
   </div>
 </div>""" if sheet_url else ""
 
@@ -684,8 +684,6 @@ a{{text-decoration:none;color:inherit}}
       <span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="8.5" r="2.4"/><path d="M16 14.2A4.6 4.6 0 0 1 20.5 19"/></svg></span>
       <span class="tl">팀 소개 &amp; 기도제목</span>
     </div>
-
-    <div class="welcome"><b>식사팀 가이드</b>요일을 눌러 그날의 식단을 확인하세요.</div>
 
     {sheet_btn}
     <div class="foot">통영 물댄동산교회 위드공동체 · 2026 여름 아웃리치</div>
