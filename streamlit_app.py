@@ -527,9 +527,9 @@ a{{text-decoration:none;color:inherit}}
 .welcome b{{display:block;font-size:18px;color:var(--primary);font-weight:800;margin-bottom:4px}}
 
 /* ── 홈: 수목금토+기타 한 줄 타일 ── */
-.day-row{{display:flex;gap:6px;margin-bottom:10px}}
+.day-row{{display:flex;gap:2px;margin-bottom:10px}}
 .day-tile{{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;
-  padding:6px 2px;cursor:pointer;transition:transform .12s;-webkit-tap-highlight-color:transparent}}
+  padding:2px 0;cursor:pointer;transition:transform .12s;-webkit-tap-highlight-color:transparent}}
 .day-tile:active{{transform:scale(.93)}}
 .day-tile .di{{width:52px;height:52px;flex:none;
   clip-path:path('M21,1.5 C29,0.5 41,4 41.5,16 C42,26 40,34 31,39 C22,44 9,42 4,33 C-1,24 1,11 9,5 C13,2.2 17,2 21,1.5 Z');
